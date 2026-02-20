@@ -2910,6 +2910,24 @@ footer {
   background: rgba(155,48,255,0.6);
   transform: scale(1.1);
 }
+.site-video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.video-coming-soon {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.video-coming-soon:hover .play-icon {
+  transform: none;
+  background: rgba(155,48,255,0.3);
+}
+
 .video-placeholder iframe {
   position: absolute;
   inset: 0;
@@ -3728,25 +3746,25 @@ footer {
 
   <div class="video-grid">
     <div class="video-card">
-      <div class="video-placeholder" id="vid1" onclick="loadVideo(this, 'VIDEO_ID_LBX')">
-        <div class="play-icon">▶</div>
-        <span>Light Bee X — Trail Ride</span>
-      </div>
-      <div class="video-card-title">2026 Light Bee X on the trails</div>
+      <video class="site-video" controls preload="metadata" playsinline poster="">
+        <source src="lightbeeX-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="video-card-title">2026 Light Bee X in Action</div>
     </div>
     <div class="video-card">
-      <div class="video-placeholder" id="vid2" onclick="loadVideo(this, 'VIDEO_ID_ULTRABEE')">
-        <div class="play-icon">▶</div>
-        <span>Ultra Bee — Full Speed Test</span>
-      </div>
-      <div class="video-card-title">2026 Ultra Bee top speed run</div>
+      <video class="site-video" controls preload="metadata" playsinline poster="">
+        <source src="ultrabee-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="video-card-title">2026 Ultra Bee in Action</div>
     </div>
     <div class="video-card">
-      <div class="video-placeholder" id="vid3" onclick="loadVideo(this, 'VIDEO_ID_HYPERBEE')">
-        <div class="play-icon">▶</div>
-        <span>Hyper Bee — City Ride</span>
-      </div>
-      <div class="video-card-title">2026 Hyper Bee around the city</div>
+      <video class="site-video" controls preload="metadata" playsinline poster="">
+        <source src="hyperbee-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="video-card-title">2026 Hyper Bee in Action</div>
     </div>
   </div>
   <p style="text-align:center; color: var(--text-muted); font-size: 0.75rem; margin-top: 1.5rem; position: relative; z-index: 2;">Have your own Surron footage? Send it to surronkingmn@gmail.com and we'll feature it here.</p>
