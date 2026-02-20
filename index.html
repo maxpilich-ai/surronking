@@ -3162,7 +3162,7 @@ footer {
     <div class="product-card" data-tilt>
       <div class="stripe-badge">ENTRY LEVEL</div>
       <div class="product-img-wrap" data-bike="lbx">
-        <img class="product-img" id="img-lbx" src="lightBeeX-4.png" alt="2026 Surron Light Bee X - Sage Green">
+        <img class="product-img" id="img-lbx" src="lightBeeX-2.png" alt="2026 Surron Light Bee X - Sage Green">
       </div>
       <div class="product-status">IN STOCK</div>
       <h3 class="product-name">2026 Surron Light Bee X</h3>
@@ -4352,10 +4352,10 @@ const bikeColorDefs = {
 // Real product photos for each bike + color
 const bikeImages = {
   lbx: {
-    'Sage Green': 'lightBeeX-4.png',
+    'Sage Green': 'lightBeeX-2.png',
     'Carbon Black': 'lightBeeX-3.png',
-    'Phantom Purple': 'lightBeeX-2.png',
-    'Lapis Blue': 'lightBeeX-1.png'
+    'Phantom Purple': 'lightBeeX-1.png',
+    'Lapis Blue': 'lightBeeX-4.png'
   },
   ultrabee: {
     'Desert Brown': 'model-us-brown.png',
@@ -4967,7 +4967,7 @@ function showToast(message, type = 'info', duration = 3000) {
 // ========== LIVE PURCHASE NOTIFICATIONS ==========
 const toastCities=['Austin','Houston','Dallas','Chicago','Denver','Phoenix','Atlanta','Miami','LA','San Diego','Portland','Seattle','New York','Nashville','Charlotte','Tampa','Orlando','Las Vegas','Detroit','Boston','Philadelphia','Raleigh','Sacramento','San Jose'];
 const toastBikes=['2026 Light Bee X','2026 Ultra Bee','2026 Hyper Bee'];
-const toastNames=['Someone','A rider','A new king','Diddy P.','Jeff E.'];
+const toastNames=['Someone','A rider','A new king','Mike R.','Jeff E.'];
 function showLivePurchase(){
   const city=toastCities[Math.floor(Math.random()*toastCities.length)];
   const bike=toastBikes[Math.floor(Math.random()*toastBikes.length)];
@@ -4975,26 +4975,7 @@ function showLivePurchase(){
   const mins=Math.floor(Math.random()*45)+2;
   showToast(who+' in '+city+' just ordered a '+bike+' \u2022 '+mins+'m ago','info');
 }
-// Social proof: boost frequency when bike section is visible
-let bikeSectionVisible = false;
-const bikeSection = document.getElementById('bikes');
-if (bikeSection) {
-  const bioObserver = new IntersectionObserver((entries) => {
-    bikeSectionVisible = entries[0].isIntersecting;
-  }, { threshold: 0.1 });
-  bioObserver.observe(bikeSection);
-}
-
-function scheduleNextPurchase() {
-  const delay = bikeSectionVisible
-    ? 30000 + Math.random() * 15000  // 30-45s when viewing bikes
-    : 55000 + Math.random() * 25000; // 55-80s otherwise
-  setTimeout(() => {
-    showLivePurchase();
-    scheduleNextPurchase();
-  }, delay);
-}
-setTimeout(() => { showLivePurchase(); scheduleNextPurchase(); }, 20000);
+setTimeout(function(){ showLivePurchase(); }, 20000);
 
 // ========== URGENCY COUNTDOWN TIMER ==========
 (function startUrgencyTimer() {
