@@ -3162,7 +3162,7 @@ footer {
     <div class="product-card" data-tilt>
       <div class="stripe-badge">ENTRY LEVEL</div>
       <div class="product-img-wrap" data-bike="lbx">
-        <img class="product-img" id="img-lbx" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="2026 Surron Light Bee X - Sage Green">
+        <img class="product-img" id="img-lbx" src="lightBeeX-4.png" alt="2026 Surron Light Bee X - Sage Green">
       </div>
       <div class="product-status">IN STOCK</div>
       <h3 class="product-name">2026 Surron Light Bee X</h3>
@@ -3221,7 +3221,7 @@ footer {
       <div class="best-value-badge">⚡ BEST VALUE ⚡</div>
       <div class="stripe-badge">POPULAR</div>
       <div class="product-img-wrap" data-bike="ultrabee">
-        <img class="product-img" id="img-ultrabee" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="2026 Surron Ultra Bee - Desert Brown">
+        <img class="product-img" id="img-ultrabee" src="model-us-brown.png" alt="2026 Surron Ultra Bee - Desert Brown">
       </div>
       <div class="product-status">BEST SELLER</div>
       <h3 class="product-name">2026 Surron Ultra Bee</h3>
@@ -3277,7 +3277,7 @@ footer {
     <div class="product-card" data-tilt>
       <div class="stripe-badge">LIGHTWEIGHT</div>
       <div class="product-img-wrap" data-bike="hyperbee">
-        <img class="product-img" id="img-hyperbee" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="2026 Surron Hyper Bee - Yellow / Black">
+        <img class="product-img" id="img-hyperbee" src="hyperbee-yellow.png" alt="2026 Surron Hyper Bee - Yellow / Black">
       </div>
       <div class="product-status">NEW RELEASE</div>
       <h3 class="product-name">2026 Surron Hyper Bee</h3>
@@ -3914,12 +3914,7 @@ footer {
         <h4>Contact</h4>
         <a href="sms:6124949944" class="footer-link">💬 Text Us</a>
         <a href="mailto:surronkingmn@gmail.com" class="footer-link">📧 surronkingmn@gmail.com</a>
-        <div class="footer-social" style="margin-top:0.8rem;">
-          <a href="https://instagram.com" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Instagram">📸</a>
-          <a href="https://facebook.com" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Facebook">f</a>
-          <a href="https://twitter.com" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">𝕏</a>
-          <a href="https://youtube.com" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="YouTube">▶</a>
-        </div>
+        <!-- Social links will be added once accounts have content -->
       </div>
     </div>
     <div class="footer-newsletter">
@@ -4354,15 +4349,25 @@ const bikeColorDefs = {
   }
 };
 
-// Build bikeImages from SVGs (replace any value with a real URL to use a photo instead)
-const bikeImages = {};
-Object.keys(bikeColorDefs).forEach(function(bikeId) {
-  bikeImages[bikeId] = {};
-  Object.keys(bikeColorDefs[bikeId]).forEach(function(color) {
-    var c = bikeColorDefs[bikeId][color];
-    bikeImages[bikeId][color] = makeBikeSVG(c[0], c[1], c[2]);
-  });
-});
+// Real product photos for each bike + color
+const bikeImages = {
+  lbx: {
+    'Sage Green': 'lightBeeX-4.png',
+    'Carbon Black': 'lightBeeX-3.png',
+    'Phantom Purple': 'lightBeeX-2.png',
+    'Lapis Blue': 'lightBeeX-1.png'
+  },
+  ultrabee: {
+    'Desert Brown': 'model-us-brown.png',
+    'Carbon Black': 'model-us-black.png'
+  },
+  hyperbee: {
+    'Yellow / Black': 'hyperbee-yellow.png',
+    'Black / Blue': 'hyperbee-blue.png',
+    'White / Pink': 'hyperbee-pink.png',
+    'Black / Green': 'hyperbee-green.png'
+  }
+};
 
 // Get currently selected color for a bike
 function getActiveColor(bikeId) {
