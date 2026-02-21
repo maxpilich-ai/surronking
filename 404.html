@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Page Not Found | SURRON KING</title>
+<meta name="theme-color" content="#9b30ff">
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    color: #f0f0f0;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(0deg, transparent 24%, rgba(155,48,255,0.04) 25%, rgba(155,48,255,0.04) 26%, transparent 27%, transparent 74%, rgba(155,48,255,0.04) 75%, rgba(155,48,255,0.04) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(155,48,255,0.04) 25%, rgba(155,48,255,0.04) 26%, transparent 27%, transparent 74%, rgba(155,48,255,0.04) 75%, rgba(155,48,255,0.04) 76%, transparent 77%, transparent);
+    background-size: 80px 80px;
+    animation: gridMove 20s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 80px 80px; }
+  }
+
+  .container {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+  }
+
+  .error-code {
+    font-family: 'Russo One', sans-serif;
+    font-size: clamp(6rem, 20vw, 12rem);
+    background: linear-gradient(135deg, #9b30ff, #bf5fff, #9b30ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    text-shadow: none;
+    filter: drop-shadow(0 0 40px rgba(155,48,255,0.3));
+  }
+
+  .message {
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    color: #aaa;
+    margin: 1rem 0 2.5rem;
+    line-height: 1.6;
+  }
+
+  .home-btn {
+    display: inline-block;
+    padding: 14px 40px;
+    background: linear-gradient(135deg, #9b30ff, #6a0dad);
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Russo One', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    border-radius: 50px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .home-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(155,48,255,0.4);
+  }
+
+  .brand {
+    font-family: 'Russo One', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    color: #555;
+    margin-top: 3rem;
+  }
+
+  .glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(155,48,255,0.15), transparent 70%);
+    pointer-events: none;
+  }
+
+  .glow-1 { top: -100px; left: -100px; }
+  .glow-2 { bottom: -100px; right: -100px; }
+</style>
+</head>
+<body>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="container">
+    <div class="error-code">404</div>
+    <p class="message">This trail leads nowhere.<br>Let's get you back on the road.</p>
+    <a href="./" class="home-btn">BACK TO HOME</a>
+    <div class="brand">SURRON KING</div>
+  </div>
+</body>
+</html>

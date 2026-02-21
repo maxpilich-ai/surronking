@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://maxpilich-ai.github.io/surronking/</loc>
+    <lastmod>2026-02-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <video:video>
+      <video:content_loc>https://maxpilich-ai.github.io/surronking/lightbeeX-video.mp4</video:content_loc>
+      <video:title>2026 Surron Light Bee X</video:title>
+      <video:description>The 2026 Surron Light Bee X in action — 8kW motor, 47-mile range, 50 MPH top speed.</video:description>
+    </video:video>
+    <video:video>
+      <video:content_loc>https://maxpilich-ai.github.io/surronking/ultrabee-video.mp4</video:content_loc>
+      <video:title>2026 Surron Ultra Bee</video:title>
+      <video:description>The 2026 Surron Ultra Bee in action — 21kW motor, 70+ mile range, 59 MPH top speed.</video:description>
+    </video:video>
+    <video:video>
+      <video:content_loc>https://maxpilich-ai.github.io/surronking/hyperbee-video.mp4</video:content_loc>
+      <video:title>2026 Surron Hyper Bee</video:title>
+      <video:description>The 2026 Surron Hyper Bee in action — 5kW motor, 31-mile range, 34 MPH top speed.</video:description>
+    </video:video>
+  </url>
+</urlset>
