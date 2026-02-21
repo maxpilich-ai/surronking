@@ -929,12 +929,15 @@ section {
   background: linear-gradient(135deg, #9b30ff, #ff006e);
   border: none;
   color: #fff;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   cursor: pointer;
   font-size: 0.9rem;
   transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .chatbot-send:hover { transform: scale(1.1); }
 
@@ -1119,8 +1122,8 @@ section {
   flex-wrap: wrap;
 }
 .color-swatch {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.15);
   cursor: pointer;
@@ -1894,7 +1897,7 @@ footer {
   margin-bottom: 2rem;
 }
 
-.footer-col h4 {
+.footer-col h3 {
   color: #fff;
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -3989,12 +3992,12 @@ textarea:focus-visible,
   <div class="footer-content">
     <div class="footer-grid">
       <div class="footer-col">
-        <h4>Surron King</h4>
+        <h3>Surron King</h3>
         <p style="color:var(--text-muted);font-size:0.85rem;line-height:1.6;">The #1 direct-to-rider Surron dealer in the US. Saving riders $1,000–$3,000 on every bike since 2024.</p>
         <p style="color:var(--text-muted);font-size:0.8rem;margin-top:0.5rem;">Shipping worldwide. Based in the US.</p>
       </div>
       <div class="footer-col">
-        <h4>Quick Links</h4>
+        <h3>Quick Links</h3>
         <a href="#bikes" class="footer-link">Shop Bikes</a>
         <a href="#how" class="footer-link">How It Works</a>
         <a href="#why-us" class="footer-link">Why Us</a>
@@ -4002,14 +4005,14 @@ textarea:focus-visible,
         <a href="#faq" class="footer-link">FAQ</a>
       </div>
       <div class="footer-col">
-        <h4>Policies</h4>
+        <h3>Policies</h3>
         <a href="#" onclick="openPolicy('shipping');return false" class="footer-link">Shipping Policy</a>
         <a href="#" onclick="openPolicy('returns');return false" class="footer-link">Return Policy</a>
         <a href="#" onclick="openPolicy('privacy');return false" class="footer-link">Privacy Policy</a>
         <a href="#" onclick="openPolicy('terms');return false" class="footer-link">Terms of Service</a>
       </div>
       <div class="footer-col">
-        <h4>Contact</h4>
+        <h3>Contact</h3>
         <a href="sms:6124949944" class="footer-link">💬 Text Us</a>
         <a href="mailto:surronking@gmail.com" class="footer-link">📧 surronking@gmail.com</a>
         <p style="color:var(--text-muted);font-size:0.75rem;margin-top:0.8rem;opacity:0.6;">📱 Socials coming soon — we're just getting started.</p>
@@ -4019,7 +4022,7 @@ textarea:focus-visible,
       <p style="color: var(--text-muted); font-size: 0.8rem;">Get exclusive deals and updates — straight to your inbox.</p>
       <div class="newsletter-bar">
         <label for="newsletterEmail" class="sr-only">Email Address</label>
-        <input type="email" id="newsletterEmail" name="email" placeholder="Enter your email">
+        <input type="email" id="newsletterEmail" name="email" placeholder="Enter your email" maxlength="254">
         <button type="button" onclick="subscribeNewsletter()">SUBSCRIBE</button>
       </div>
     </div>
@@ -4098,15 +4101,15 @@ textarea:focus-visible,
       <form class="order-form" id="orderForm" onsubmit="submitOrder(event)">
         <div class="form-group">
           <label for="oName">Your Name *</label>
-          <input type="text" id="oName" name="name" required>
+          <input type="text" id="oName" name="name" required maxlength="100">
         </div>
         <div class="form-group">
           <label for="oPhone">Phone Number *</label>
-          <input type="tel" id="oPhone" name="phone" required>
+          <input type="tel" id="oPhone" name="phone" required maxlength="20">
         </div>
         <div class="form-group">
           <label for="oEmail">Email Address *</label>
-          <input type="email" id="oEmail" name="email" required>
+          <input type="email" id="oEmail" name="email" required maxlength="254">
         </div>
         <div class="form-group">
           <label for="oAddress">Street Address *</label>
@@ -4119,15 +4122,15 @@ textarea:focus-visible,
         <div class="address-grid">
           <div class="form-group">
             <label for="oCity">City *</label>
-            <input type="text" id="oCity" name="city" required>
+            <input type="text" id="oCity" name="city" required maxlength="100">
           </div>
           <div class="form-group">
             <label for="oState">State *</label>
-            <input type="text" id="oState" name="state" placeholder="FL" required>
+            <input type="text" id="oState" name="state" placeholder="FL" required maxlength="50">
           </div>
           <div class="form-group">
             <label for="oZip">ZIP *</label>
-            <input type="text" id="oZip" name="zip" placeholder="33101" required>
+            <input type="text" id="oZip" name="zip" placeholder="33101" required maxlength="20">
           </div>
         </div>
         <div class="form-group">
@@ -4982,8 +4985,11 @@ function closeOrder() {
   unlockBody();
 }
 
+var isSubmittingOrder = false;
 function submitOrder(e) {
   e.preventDefault();
+  if (isSubmittingOrder) { showToast('Order is being submitted...', 'info'); return; }
+  isSubmittingOrder = true;
 
   const selectedColor = pendingColor || getSelectedColor(currentBike);
 
@@ -5063,8 +5069,10 @@ function submitOrder(e) {
     var orderSuccess = document.getElementById('orderSuccess');
     if (orderSuccess) orderSuccess.classList.add('show');
     launchConfetti();
+    isSubmittingOrder = false;
   }).catch(function() {
     showToast('Failed to submit order. Please try again or email us directly at surronking@gmail.com', 'error');
+    isSubmittingOrder = false;
   });
 }
 
