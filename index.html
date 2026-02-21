@@ -3234,7 +3234,7 @@ textarea:focus-visible,
       <div class="stat-label">Bikes Sold</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number" data-target="1000" data-suffix="+">0</div>
+      <div class="stat-number" data-target="500" data-suffix="+">0</div>
       <div class="stat-label">Happy Riders</div>
     </div>
     <div class="stat-card">
@@ -3303,7 +3303,6 @@ textarea:focus-visible,
           <div class="color-swatch active" style="background: #7a8b6e;" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Sage Green"><span class="swatch-tooltip">Sage Green</span></div>
           <div class="color-swatch" style="background: #1a1a1a;" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Carbon Black"><span class="swatch-tooltip">Carbon Black</span></div>
           <div class="color-swatch" style="background: #5b2d8e;" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Phantom Purple"><span class="swatch-tooltip">Phantom Purple</span></div>
-          <div class="color-swatch" style="background: #2a5caa;" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Lapis Blue"><span class="swatch-tooltip">Lapis Blue</span></div>
         </div>
       </div>
       <div class="btn-row">
@@ -4316,7 +4315,7 @@ function autoStartMusic() {
 // ========== IMAGE UPLOAD SYSTEM (PER-COLOR) ==========
 // Color map for each bike
 const bikeColors = {
-  lbx: ['Sage Green', 'Carbon Black', 'Phantom Purple', 'Lapis Blue'],
+  lbx: ['Sage Green', 'Carbon Black', 'Phantom Purple'],
   ultrabee: ['Desert Brown', 'Carbon Black'],
   hyperbee: ['Yellow / Black', 'Black / Blue', 'White / Pink', 'Black / Green']
 };
@@ -4436,8 +4435,7 @@ const bikeColorDefs = {
   lbx: {
     'Sage Green': ['#5B7A4A', '#8FBF6B', '#6B8E5B'],
     'Carbon Black': ['#2a2a2a', '#d4af37', '#444'],
-    'Phantom Purple': ['#6B2FA0', '#9b30ff', '#7B3FBF'],
-    'Lapis Blue': ['#1E3A8A', '#3B82F6', '#2563EB']
+    'Phantom Purple': ['#6B2FA0', '#9b30ff', '#7B3FBF']
   },
   ultrabee: {
     'Desert Brown': ['#8B6F47', '#C4A265', '#A0845C'],
@@ -4456,8 +4454,7 @@ const bikeImages = {
   lbx: {
     'Sage Green': 'lightBeeX-2.png',
     'Carbon Black': 'lightBeeX-3.png',
-    'Phantom Purple': 'lightBeeX-1.png',
-    'Lapis Blue': 'lightBeeX-4.png'
+    'Phantom Purple': 'lightBeeX-1.png'
   },
   ultrabee: {
     'Desert Brown': 'model-us-brown.png',
@@ -5741,7 +5738,7 @@ function toggleChatbot() {
 
 // Knowledge base for the AI
 const bikeKB = {
-  lbx: { name: '2026 Surron Light Bee X', motor: '8kW', range: '47 miles', speed: '50 MPH', weight: '126 lbs', battery: '60V 40Ah', price: '$4,300', colors: 'Sage Green, Carbon Black, Phantom Purple, Lapis Blue', charge: '~3.5 hours', best: 'all-around riding, trails and streets' },
+  lbx: { name: '2026 Surron Light Bee X', motor: '8kW', range: '47 miles', speed: '50 MPH', weight: '126 lbs', battery: '60V 40Ah', price: '$4,300', colors: 'Sage Green, Carbon Black, Phantom Purple', charge: '~3.5 hours', best: 'all-around riding, trails and streets' },
   ultra: { name: '2026 Surron Ultra Bee', motor: '21kW', range: '70+ miles', speed: '59 MPH', weight: '195 lbs', battery: '74V 55Ah', price: '$5,600', colors: 'Carbon Black, Desert Brown', charge: '~4 hours', best: 'max performance, power riders' },
   hyper: { name: '2026 Surron Hyper Bee', motor: '5kW', range: '31 miles', speed: '34 MPH', weight: '86 lbs', battery: '50.4V 25Ah', price: '$2,900', colors: 'Yellow/Black, Black/Blue, White/Pink, Black/Green', charge: '~2.5 hours', best: 'city commuting, lightweight riding' }
 };
@@ -5750,13 +5747,13 @@ const chatResponses = [
   { triggers: ['price', 'cost', 'how much', 'expensive', 'cheap', 'afford'], response: 'We have three bikes: The Light Bee X at $4,300, the Ultra Bee at $5,600, and the Hyper Bee at $2,900. Because we sell direct with no middleman, our prices are thousands below what dealers charge. We also offer financing — ask me about monthly payments!' },
   { triggers: ['financ', 'monthly', 'payment plan', 'installment', 'per month'], response: 'We offer financing on all bikes! The Hyper Bee starts at about $242/mo, the Light Bee X at $358/mo, and the Ultra Bee at $467/mo over 12 months. Reach out to us to set up a plan that works for you.' },
   { triggers: ['ship', 'deliver', 'how long', 'when will', 'arrival', 'tracking'], response: 'We ship worldwide! Delivery takes 4-8 weeks depending on your location. You get full tracking so you always know where your bike is. We take responsibility for the bike until it reaches your door.' },
-  { triggers: ['light bee', 'lbx', 'bee x'], response: 'The 2026 Light Bee X is our best all-around bike. 8kW motor, 50 MPH top speed, 47-mile range, and only 126 lbs. It comes in 4 colors: Sage Green, Carbon Black, Phantom Purple, and Lapis Blue. Price: $4,300 (dealers charge $5,899+).' },
+  { triggers: ['light bee', 'lbx', 'bee x'], response: 'The 2026 Light Bee X is our best all-around bike. 8kW motor, 50 MPH top speed, 47-mile range, and only 126 lbs. It comes in 3 colors: Sage Green, Carbon Black, and Phantom Purple. Price: $4,300 (dealers charge $5,899+).' },
   { triggers: ['ultra bee', 'ultra'], response: 'The 2026 Ultra Bee is our most powerful model. 21kW motor, 59 MPH top speed, 70+ mile range. It comes in Carbon Black and Desert Brown. At $5,600, you save $2,399 compared to dealer pricing — the biggest savings in our lineup.' },
   { triggers: ['hyper bee', 'hyper'], response: 'The 2026 Hyper Bee is our lightest and most affordable bike. 5kW motor, 34 MPH, 31-mile range, and only 86 lbs. It comes in 4 colors: Yellow/Black, Black/Blue, White/Pink, and Black/Green. Just $2,900 — $999 less than any dealer.' },
   { triggers: ['battery', 'charge', 'charging'], response: 'Battery life varies by model: Light Bee X has a 60V 40Ah (~3.5hr charge), Ultra Bee has 74V 55Ah (~4hr charge), and Hyper Bee has 50.4V 25Ah (~2.5hr charge). All batteries are rated for 500+ charge cycles (2-3 years of regular riding). We carry replacement batteries too.' },
   { triggers: ['fast', 'speed', 'top speed', 'mph'], response: 'Top speeds: Hyper Bee goes 34 MPH, the Light Bee X hits 50 MPH, and the Ultra Bee maxes out at 59 MPH. All electric, all instant torque — no engine warm-up needed.' },
   { triggers: ['range', 'far', 'miles', 'distance'], response: 'Range per charge: Hyper Bee gets 31 miles, Light Bee X gets 47 miles, and the Ultra Bee goes 70+ miles. Range depends on terrain, rider weight, and speed.' },
-  { triggers: ['color', 'colours', 'available in'], response: 'Light Bee X: Sage Green, Carbon Black, Phantom Purple, Lapis Blue (4 options). Ultra Bee: Carbon Black, Desert Brown (2 options). Hyper Bee: Yellow/Black, Black/Blue, White/Pink, Black/Green (4 options).' },
+  { triggers: ['color', 'colours', 'available in'], response: 'Light Bee X: Sage Green, Carbon Black, Phantom Purple (3 options). Ultra Bee: Carbon Black, Desert Brown (2 options). Hyper Bee: Yellow/Black, Black/Blue, White/Pink, Black/Green (4 options).' },
   { triggers: ['license', 'legal', 'registration', 'street legal'], response: 'Licensing requirements vary by location. In most US states, you don\'t need a motorcycle license for these bikes, but regulations differ. We recommend checking your local laws before purchasing.' },
   { triggers: ['middleman', 'dealer', 'cheaper', 'why cheap', 'why less', 'save', 'direct'], response: 'We sell direct to you — no dealership, no middleman, no markup. That\'s how we keep prices $1,000 to $2,400 below what dealers charge for the exact same bikes. Same quality, way better price.' },
   { triggers: ['mod', 'custom', 'upgrade', 'part'], response: 'Absolutely! The Surron community is huge on mods and customization. We carry parts and can point you to guides. It\'s your bike — build it however you want.' },
