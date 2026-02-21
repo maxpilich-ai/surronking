@@ -102,6 +102,7 @@
   --purple: #9b30ff;
   --purple-dark: #6a0dad;
   --purple-glow: #bf5fff;
+  --neon: #39ff14;
   --neon-green: #39ff14;
   --neon-pink: #ff006e;
   --dark: #0a0a0a;
@@ -2018,6 +2019,7 @@ footer {
 .about-stat-num {
   font-size: 2.2rem;
   font-weight: 800;
+  color: var(--neon);
   background: linear-gradient(135deg, var(--neon), var(--purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -2786,6 +2788,9 @@ footer {
   inset: 0;
   pointer-events: none;
   z-index: 9995;
+}
+@media (max-width: 768px) {
+  .lightning-canvas { display: none !important; }
 }
 
 /* CROWN EASTER EGG */
@@ -3836,21 +3841,21 @@ textarea:focus-visible,
 
   <div class="video-grid">
     <div class="video-card">
-      <video class="site-video" controls preload="metadata" playsinline poster="">
+      <video class="site-video" controls preload="metadata" playsinline>
         <source src="lightbeeX-video.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
       <div class="video-card-title">2026 Light Bee X in Action</div>
     </div>
     <div class="video-card">
-      <video class="site-video" controls preload="metadata" playsinline poster="">
+      <video class="site-video" controls preload="metadata" playsinline>
         <source src="ultrabee-video.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
       <div class="video-card-title">2026 Ultra Bee in Action</div>
     </div>
     <div class="video-card">
-      <video class="site-video" controls preload="metadata" playsinline poster="">
+      <video class="site-video" controls preload="metadata" playsinline>
         <source src="hyperbee-video.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
@@ -4195,7 +4200,8 @@ textarea:focus-visible,
     <div class="chat-msg bot">Hey! I'm the Surron King AI assistant. Ask me anything about our bikes, shipping, pricing, specs — whatever you need. 🏍️</div>
   </div>
   <div class="chatbot-input">
-    <input type="text" id="chatInput" placeholder="Ask a question..." onkeydown="if(event.key==='Enter')sendChat()">
+    <label for="chatInput" class="sr-only">Ask a question</label>
+    <input type="text" id="chatInput" placeholder="Ask a question..." aria-label="Ask a question" onkeydown="if(event.key==='Enter')sendChat()">
     <button type="button" class="chatbot-send" onclick="sendChat()">→</button>
   </div>
 </div>
@@ -4619,7 +4625,7 @@ function animateCounters() {
       if (!entry.isIntersecting || entry.target.dataset.animated) return;
       const el = entry.target;
       if (el.dataset.text) { entry.target.dataset.animated = 'true'; return; }
-      const target = parseInt(el.dataset.target) || 0;
+      const target = parseInt(el.dataset.target, 10) || 0;
       if (!target) return;
       const suffix = el.dataset.suffix || '';
       let current = 0;
@@ -4679,10 +4685,14 @@ function showTestimonial(index) {
 
 // Auto-rotate testimonials
 const totalTestimonials = document.querySelectorAll('.testimonial').length || 1;
-setInterval(() => {
+var testimonialInterval = setInterval(() => {
   currentTestimonial = (currentTestimonial + 1) % totalTestimonials;
   showTestimonial(currentTestimonial);
 }, 8000);
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) { clearInterval(testimonialInterval); }
+  else { testimonialInterval = setInterval(() => { currentTestimonial = (currentTestimonial + 1) % totalTestimonials; showTestimonial(currentTestimonial); }, 8000); }
+});
 
 // ========== FAQ ACCORDION ==========
 function toggleFaq(element) {
@@ -5084,7 +5094,7 @@ setTimeout(function(){ showLivePurchase(); }, 20000);
   // Set end date to 3 days from now, reset each session via localStorage
   let rawEnd = null;
   try { rawEnd = localStorage.getItem('surron_urgency_end'); } catch(e) {}
-  let endTime = parseInt(rawEnd) || 0;
+  let endTime = parseInt(rawEnd, 10) || 0;
   if (!endTime || endTime < Date.now()) {
     endTime = Date.now() + (3 * 24 * 60 * 60 * 1000); // 3 days
     try { localStorage.setItem('surron_urgency_end', endTime.toString()); } catch(e) {}
@@ -5116,7 +5126,7 @@ setTimeout(function(){ showLivePurchase(); }, 20000);
 // ========== VIEWING COUNTER RANDOMIZER ==========
 function updateViewingCounters() {
   document.querySelectorAll('.view-count').forEach(el => {
-    const current = parseInt(el.textContent) || 15;
+    const current = parseInt(el.textContent, 10) || 15;
     const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
     const newVal = Math.max(5, Math.min(35, current + change));
     el.textContent = newVal;
@@ -5133,7 +5143,7 @@ const speedoObserver = new IntersectionObserver((entries) => {
     const needle = entry.target.querySelector('.speedo-needle');
     const numEl = entry.target.querySelector('.speedo-num');
     if (!numEl) return;
-    const target = parseInt(numEl.dataset.target) || 0;
+    const target = parseInt(numEl.dataset.target, 10) || 0;
     if (!target) return;
     // Animate the arc fill and needle
     setTimeout(() => {
@@ -5307,17 +5317,11 @@ function drawLightning() {
 }
 
 document.addEventListener('click', function(e) {
+  if (window.innerWidth <= 768) return;
   if (e.target.closest('.order-overlay') || e.target.closest('.cart-drawer') || e.target.closest('input') || e.target.closest('textarea') || e.target.closest('select') || e.target.closest('.product-img-wrap')) return;
   spawnLightning(e.clientX, e.clientY);
   requestAnimationFrame(drawLightning);
 });
-
-document.addEventListener('touchstart', function(e) {
-  if (e.target.closest('.order-overlay') || e.target.closest('.cart-drawer') || e.target.closest('input') || e.target.closest('textarea') || e.target.closest('select') || e.target.closest('.product-img-wrap')) return;
-  const touch = e.touches[0];
-  spawnLightning(touch.clientX, touch.clientY);
-  requestAnimationFrame(drawLightning);
-}, { passive: true });
 
 // ========== KONAMI CODE EASTER EGG ==========
 // Type "KING" on keyboard for crown mode
