@@ -35,6 +35,10 @@
 <!-- Favicon (SVG lightning bolt) -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
 
+<!-- Google Analytics — SETUP: Go to analytics.google.com → Create property → Get your G-XXXXXXXXX ID → Uncomment and replace below -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXX');</script> -->
+
 <!-- Google Search Console — SETUP: Go to search.google.com/search-console → Add property → Get verification code → Replace below -->
 <!-- <meta name="google-site-verification" content="PASTE_YOUR_VERIFICATION_CODE_HERE"> -->
 
@@ -1298,7 +1302,60 @@ section {
 }
 
 /* PSYCHOLOGY: Commitment Confirmation */
-/* Commitment overlay — removed, Stripe handles checkout */
+.commitment-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 10001;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: all 0.3s ease;
+}
+.commitment-overlay.open {
+  opacity: 1; visibility: visible;
+}
+.commitment-box {
+  background: linear-gradient(135deg, #1a0a2e, #0e0e0e);
+  border: 2px solid var(--neon-green);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  animation: commitPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes commitPop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.commitment-emoji { font-size: 3rem; margin-bottom: 1rem; }
+.commitment-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 1.4rem;
+  color: var(--neon-green);
+  margin-bottom: 0.5rem;
+}
+.commitment-subtitle {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+.commitment-btn {
+  background: linear-gradient(135deg, #39ff14, #00e676);
+  color: #000;
+  border: none;
+  padding: 0.8rem 2.5rem;
+  border-radius: 30px;
+  font-family: 'Russo One', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+}
+.commitment-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(57,255,20,0.5);
+}
 
 .product-img-wrap {
   width: 100%;
@@ -2055,6 +2112,20 @@ footer {
   margin-bottom: 0.3rem;
 }
 
+.order-trust-bar {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 0.75rem;
+  color: var(--neon);
+  background: rgba(0,255,136,0.05);
+  border: 1px solid rgba(0,255,136,0.15);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
 /* BUTTON ROW (BUY NOW + ADD TO CART) */
 .btn-row {
   display: flex;
@@ -2293,7 +2364,134 @@ footer {
   font-weight: 600;
 }
 
-/* ORDER MODAL — removed, Stripe handles checkout */
+/* ORDER MODAL */
+.order-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  z-index: 9996;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-overlay.open {
+  display: flex;
+}
+
+.order-modal {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 2.5rem 2rem 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.order-close {
+  position: sticky;
+  top: 0;
+  float: right;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -0.5rem;
+  margin-right: -0.5rem;
+}
+
+.order-modal h2 {
+  font-family: 'Russo One', sans-serif;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.order-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.order-form label {
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.order-form input,
+.order-form select,
+.order-form textarea {
+  padding: 0.8rem;
+  background: rgba(155,48,255,0.05);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+}
+
+.order-form input:focus,
+.order-form select:focus,
+.order-form textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 15px rgba(155,48,255,0.3);
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.order-success {
+  display: none;
+  text-align: center;
+  padding: 2rem;
+}
+
+.order-success.show {
+  display: block;
+  animation: slideIn 0.5s ease;
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  font-family: 'Russo One', sans-serif;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.success-text {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
 
 /* BACK TO TOP */
 .back-to-top {
@@ -2505,6 +2703,11 @@ footer {
 
   .loader-bar { width: 140px; }
 
+  .order-modal { width: 95%; padding: 1.5rem; }
+  .order-modal h2 { font-size: 1.3rem; }
+  .order-modal input, .order-modal select, .order-modal textarea { font-size: 16px; }
+  .address-grid { grid-template-columns: 1fr; }
+
   .nav-logo { font-size: 1rem; }
   nav { padding: 0.6rem 1rem; }
   .newsletter-bar { flex-direction: column; }
@@ -2524,6 +2727,9 @@ footer {
 /* ULTRA-SMALL SCREENS */
 @media (max-width: 320px) {
   .urgency-banner { font-size: 0.75rem; padding: 0.6rem 0.8rem; gap: 0.4rem; }
+  .order-modal { width: 98%; padding: 1rem; }
+  .order-modal h2 { font-size: 1.1rem; }
+  .address-grid { grid-template-columns: 1fr; }
   .hero-title { font-size: clamp(1.2rem, 5vw, 1.4rem); }
   section { padding: 2rem 0.5rem; }
   .product-card { padding: 1rem; }
@@ -2543,6 +2749,7 @@ footer {
   .faq-toggle { width: 44px; height: 44px; }
   .faq-question { padding: 0.8rem; font-size: 0.85rem; }
   .slider-dot.active { width: 20px; }
+  .order-modal input, .order-modal select, .order-modal textarea { font-size: 16px; }
 }
 
 /* REDUCED MOTION - accessibility */
@@ -2926,7 +3133,7 @@ textarea:focus-visible,
   #preloader, .parallax-shapes, .lightning-canvas,
   .floating-cart, .chat-fab, .chatbot-window,
   .back-to-top, .entry-gate-overlay, .toast-container,
-  .urgency-banner, #particlesContainer, nav { display: none !important; }
+  .urgency-banner, .commitment-overlay, #particlesContainer, nav { display: none !important; }
   .product-card { border: 1px solid #ccc !important; break-inside: avoid; }
   .product-card::before { display: none !important; }
   a { color: #000 !important; text-decoration: underline; }
@@ -3148,13 +3355,13 @@ textarea:focus-visible,
       <div class="color-options">
         <div class="color-options-label">Available Colors</div>
         <div class="color-swatches">
-          <div class="color-swatch active" style="background: #7a8b6e;" onclick="selectColor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectColor(this)}" role="button" tabindex="0" aria-label="Select Sage Green"><span class="swatch-tooltip">Sage Green</span></div>
-          <div class="color-swatch" style="background: #1a1a1a;" onclick="selectColor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectColor(this)}" role="button" tabindex="0" aria-label="Select Carbon Black"><span class="swatch-tooltip">Carbon Black</span></div>
-          <div class="color-swatch" style="background: #5b2d8e;" onclick="selectColor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectColor(this)}" role="button" tabindex="0" aria-label="Select Phantom Purple"><span class="swatch-tooltip">Phantom Purple</span></div>
+          <div class="color-swatch active" style="background: #7a8b6e;" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Sage Green"><span class="swatch-tooltip">Sage Green</span></div>
+          <div class="color-swatch" style="background: #1a1a1a;" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Carbon Black"><span class="swatch-tooltip">Carbon Black</span></div>
+          <div class="color-swatch" style="background: #5b2d8e;" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Phantom Purple"><span class="swatch-tooltip">Phantom Purple</span></div>
         </div>
       </div>
       <div class="btn-row">
-        <a href="https://buy.stripe.com/28EdR8eAP8cP6lD1Xy5gc02" target="_blank" rel="noopener" class="btn btn-buy btn-magnetic" style="text-decoration:none;text-align:center;">BUY NOW</a>
+        <button type="button" class="btn btn-buy btn-magnetic" onclick="openOrder('2026 Surron Light Bee X')">BUY NOW</button>
         <button type="button" class="btn btn-cart btn-magnetic" onclick="addToCart('2026 Surron Light Bee X', 4300, this)">🛒 ADD TO CART</button>
       </div>
     </div>
@@ -3205,12 +3412,12 @@ textarea:focus-visible,
       <div class="color-options">
         <div class="color-options-label">Available Colors</div>
         <div class="color-swatches">
-          <div class="color-swatch" style="background: linear-gradient(135deg, #1a1a1a 50%, #d4a017 50%);" onclick="selectColor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectColor(this)}" role="button" tabindex="0" aria-label="Select Carbon Black"><span class="swatch-tooltip">Carbon Black</span></div>
-          <div class="color-swatch active" style="background: #8b6f47;" onclick="selectColor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectColor(this)}" role="button" tabindex="0" aria-label="Select Desert Brown"><span class="swatch-tooltip">Desert Brown</span></div>
+          <div class="color-swatch" style="background: linear-gradient(135deg, #1a1a1a 50%, #d4a017 50%);" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Carbon Black"><span class="swatch-tooltip">Carbon Black</span></div>
+          <div class="color-swatch active" style="background: #8b6f47;" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Desert Brown"><span class="swatch-tooltip">Desert Brown</span></div>
         </div>
       </div>
       <div class="btn-row">
-        <a href="https://buy.stripe.com/4gM7sK9gvct5cK1gSs5gc01" target="_blank" rel="noopener" class="btn btn-buy btn-magnetic" style="text-decoration:none;text-align:center;">BUY NOW</a>
+        <button type="button" class="btn btn-buy btn-magnetic" onclick="openOrder('2026 Surron Ultra Bee')">BUY NOW</button>
         <button type="button" class="btn btn-cart btn-magnetic" onclick="addToCart('2026 Surron Ultra Bee', 5600, this)">🛒 ADD TO CART</button>
       </div>
     </div>
@@ -3260,14 +3467,14 @@ textarea:focus-visible,
       <div class="color-options">
         <div class="color-options-label">Available Colors</div>
         <div class="color-swatches">
-          <div class="color-swatch active" style="background: linear-gradient(135deg, #e6c619 50%, #1a1a1a 50%);" onclick="selectColor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectColor(this)}" role="button" tabindex="0" aria-label="Select Yellow / Black"><span class="swatch-tooltip">Yellow / Black</span></div>
-          <div class="color-swatch" style="background: linear-gradient(135deg, #1a1a1a 50%, #2a5caa 50%);" onclick="selectColor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectColor(this)}" role="button" tabindex="0" aria-label="Select Black / Blue"><span class="swatch-tooltip">Black / Blue</span></div>
-          <div class="color-swatch" style="background: linear-gradient(135deg, #f0f0f0 50%, #e84393 50%);" onclick="selectColor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectColor(this)}" role="button" tabindex="0" aria-label="Select White / Pink"><span class="swatch-tooltip">White / Pink</span></div>
-          <div class="color-swatch" style="background: linear-gradient(135deg, #1a1a1a 50%, #27ae60 50%);" onclick="selectColor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectColor(this)}" role="button" tabindex="0" aria-label="Select Black / Green"><span class="swatch-tooltip">Black / Green</span></div>
+          <div class="color-swatch active" style="background: linear-gradient(135deg, #e6c619 50%, #1a1a1a 50%);" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Yellow / Black"><span class="swatch-tooltip">Yellow / Black</span></div>
+          <div class="color-swatch" style="background: linear-gradient(135deg, #1a1a1a 50%, #2a5caa 50%);" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Black / Blue"><span class="swatch-tooltip">Black / Blue</span></div>
+          <div class="color-swatch" style="background: linear-gradient(135deg, #f0f0f0 50%, #e84393 50%);" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select White / Pink"><span class="swatch-tooltip">White / Pink</span></div>
+          <div class="color-swatch" style="background: linear-gradient(135deg, #1a1a1a 50%, #27ae60 50%);" onclick="selectColor(this)" role="button" tabindex="0" aria-label="Select Black / Green"><span class="swatch-tooltip">Black / Green</span></div>
         </div>
       </div>
       <div class="btn-row">
-        <a href="https://buy.stripe.com/4gM00idwL2Sv6lD0Tu5gc00" target="_blank" rel="noopener" class="btn btn-buy btn-magnetic" style="text-decoration:none;text-align:center;">BUY NOW</a>
+        <button type="button" class="btn btn-buy btn-magnetic" onclick="openOrder('2026 Surron Hyper Bee')">BUY NOW</button>
         <button type="button" class="btn btn-cart btn-magnetic" onclick="addToCart('2026 Surron Hyper Bee', 2900, this)">🛒 ADD TO CART</button>
       </div>
     </div>
@@ -3311,7 +3518,7 @@ textarea:focus-visible,
     <div class="how-card">
       <div class="step-number">2</div>
       <h3>Complete Order</h3>
-      <p>Complete secure checkout — takes about 2 minutes. We'll reach out to confirm everything.</p>
+      <p>Fill out the order form — takes about 2 minutes. We'll reach out to confirm everything.</p>
     </div>
     <div class="how-card">
       <div class="step-number">3</div>
@@ -3907,7 +4114,102 @@ textarea:focus-visible,
 <!-- BACK TO TOP -->
 <button type="button" class="back-to-top" id="backToTop" onclick="backToTop()" aria-label="Back to top">↑</button>
 
-<!-- Stripe handles checkout — old order form removed -->
+<!-- ORDER MODAL -->
+<!-- COMMITMENT CONFIRMATION -->
+<div class="commitment-overlay" id="commitOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="commitment-box">
+    <div class="commitment-emoji">🔥</div>
+    <div class="commitment-title" id="commitTitle">Great Choice!</div>
+    <div class="commitment-subtitle" id="commitSubtitle">You picked the most popular bike — over 200 riders chose this one last month. Let's lock it in for you.</div>
+    <button type="button" class="commitment-btn" id="commitBtn" onclick="proceedToOrder()">LET'S GO →</button>
+  </div>
+</div>
+
+<div class="order-overlay" id="orderOverlay" onclick="if(event.target===this)closeOrder()">
+  <div class="order-modal">
+    <button type="button" class="order-close" onclick="closeOrder()" aria-label="Close order form">&times;</button>
+
+    <div id="orderFormWrap">
+      <h2>Order <span id="orderBikeName">Your Bike</span></h2>
+
+      <div class="order-trust-bar">
+        <span>🔒 Encrypted & Secure</span>
+        <span>🛡️ Arrives Perfect Guarantee</span>
+        <span>📦 Free Shipping</span>
+      </div>
+
+      <form class="order-form" id="orderForm" onsubmit="submitOrder(event)">
+        <div class="form-group">
+          <label for="oName">Your Name *</label>
+          <input type="text" id="oName" name="name" required maxlength="100">
+        </div>
+        <div class="form-group">
+          <label for="oPhone">Phone Number *</label>
+          <input type="tel" id="oPhone" name="phone" required maxlength="20">
+        </div>
+        <div class="form-group">
+          <label for="oEmail">Email Address *</label>
+          <input type="email" id="oEmail" name="email" required maxlength="254">
+        </div>
+        <div class="form-group">
+          <label for="oAddress">Street Address *</label>
+          <input type="text" id="oAddress" name="address" placeholder="123 Main Street" required>
+        </div>
+        <div class="form-group">
+          <label for="oAddress2">Apt / Suite / Unit</label>
+          <input type="text" id="oAddress2" name="address2" placeholder="Apt 4B (optional)">
+        </div>
+        <div class="address-grid">
+          <div class="form-group">
+            <label for="oCity">City *</label>
+            <input type="text" id="oCity" name="city" required maxlength="100">
+          </div>
+          <div class="form-group">
+            <label for="oState">State *</label>
+            <input type="text" id="oState" name="state" placeholder="FL" required maxlength="50">
+          </div>
+          <div class="form-group">
+            <label for="oZip">ZIP *</label>
+            <input type="text" id="oZip" name="zip" placeholder="33101" required maxlength="20">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="oCountry">Country *</label>
+          <select id="oCountry" name="country" required>
+            <option value="United States" selected>United States</option>
+            <option value="Canada">Canada</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Australia">Australia</option>
+            <option value="Other">Other (specify in notes)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="oPayment">Preferred Payment Method *</label>
+          <select id="oPayment" name="payment" required>
+            <option value="" selected disabled>Select payment method...</option>
+            <option value="Credit/Debit Card">Credit/Debit Card</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Apple Pay">Apple Pay</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="oNotes">Additional Notes</label>
+          <textarea id="oNotes" name="notes" placeholder="Any special requests or questions?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">SUBMIT ORDER</button>
+      </form>
+    </div>
+
+    <div id="orderSuccess" class="order-success">
+      <div class="success-icon">🎉</div>
+      <div class="success-message">Order Received!</div>
+      <div class="success-text">
+        Thanks for your order! Our team will be in touch within 24 hours to confirm everything and get your bike shipping. Delivery takes 4-8 weeks — we'll keep you updated with tracking the whole way.
+      </div>
+      <button type="button" class="btn btn-primary" onclick="closeOrder()" style="width:100%;justify-content:center;">BACK TO SITE</button>
+    </div>
+  </div>
+</div>
 
 <!-- MUSIC VISUALIZER -->
 <canvas class="visualizer-canvas" id="vizCanvas"></canvas>
@@ -4575,45 +4877,47 @@ function renderCart() {
     return;
   }
 
-  container.innerHTML = '';
+  let html = '';
   let total = 0;
   cart.forEach(item => {
     var itemPrice = Number(item.price) || 0;
     total += itemPrice;
-    var safeId = String(item.id || '').replace(/[^a-zA-Z0-9_]/g, '');
-    var div = document.createElement('div');
-    div.className = 'cart-item';
-    div.innerHTML = '<div class="cart-item-top"><div><div class="cart-item-name"></div><div class="cart-item-color"></div></div><button type="button" class="cart-item-remove" onclick="removeFromCart(this.dataset.itemId)">✕ Remove</button></div><div class="cart-item-bottom"><div class="cart-item-price"></div></div>';
-    div.querySelector('.cart-item-name').textContent = String(item.name || '').replace('2026 Surron ', '');
-    div.querySelector('.cart-item-color').textContent = 'Color: ' + String(item.color || '');
-    div.querySelector('.cart-item-remove').dataset.itemId = safeId;
-    div.querySelector('.cart-item-price').textContent = '$' + itemPrice.toLocaleString();
-    container.appendChild(div);
+    html += '<div class="cart-item">' +
+      '<div class="cart-item-top">' +
+        '<div><div class="cart-item-name">' + item.name.replace('2026 Surron ', '') + '</div>' +
+        '<div class="cart-item-color">Color: ' + item.color + '</div></div>' +
+        '<button type="button" class="cart-item-remove" data-item-id="' + item.id.replace(/[^a-zA-Z0-9_]/g, '') + '" onclick="removeFromCart(this.dataset.itemId)">✕ Remove</button>' +
+      '</div>' +
+      '<div class="cart-item-bottom">' +
+        '<div class="cart-item-price">$' + (Number(item.price) || 0).toLocaleString() + '</div>' +
+      '</div>' +
+    '</div>';
   });
+
+  container.innerHTML = html;
   if (totalEl) totalEl.textContent = '$' + total.toLocaleString();
   if (checkBtn) checkBtn.disabled = false;
 }
 
-var stripeLinks = {
-  '2026 Surron Light Bee X': 'https://buy.stripe.com/28EdR8eAP8cP6lD1Xy5gc02',
-  '2026 Surron Ultra Bee': 'https://buy.stripe.com/4gM7sK9gvct5cK1gSs5gc01',
-  '2026 Surron Hyper Bee': 'https://buy.stripe.com/4gM00idwL2Sv6lD0Tu5gc00'
-};
-
 function checkoutFromCart() {
   if (cart.length === 0) return;
+  // Build a summary of cart items for the order form
+  const bikeNames = cart.map(item => item.name.replace('2026 Surron ', '') + ' (' + item.color + ')').join(', ');
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+  // Open the order form with combined info
+  pendingBike = cart.length === 1 ? cart[0].name : 'Multiple Bikes';
+
+  const commitTitle = document.getElementById('commitTitle');
+  const commitSub = document.getElementById('commitSubtitle');
   if (cart.length === 1) {
-    var link = stripeLinks[cart[0].name];
-    if (link) { window.open(link, '_blank'); return; }
-    showToast('Checkout unavailable right now. Please email surronking@gmail.com', 'error');
-    return;
+    openOrder(cart[0].name);
+  } else {
+    if (commitTitle) commitTitle.textContent = 'Great Taste! 🔥';
+    if (commitSub) commitSub.textContent = 'You\'re checking out ' + cart.length + ' bikes — $' + total.toLocaleString() + ' total. That\'s some serious savings vs dealer prices.';
+    var commitOv = document.getElementById('commitOverlay');
+    if (commitOv) commitOv.classList.add('open');
   }
-  // Multiple bikes — open Stripe for each and notify
-  showToast('Opening checkout for each bike. Please complete each payment separately.', 'info');
-  cart.forEach(function(item) {
-    var link = stripeLinks[item.name];
-    if (link) window.open(link, '_blank');
-  });
 }
 
 // Load cart on page load
@@ -4675,7 +4979,155 @@ function getSelectedColor(bikeName) {
   return 'Not selected';
 }
 
-// Old order form functions removed — Stripe handles checkout
+let pendingBike = null;
+let pendingColor = 'Not selected';
+function openOrder(bike) {
+  pendingBike = bike;
+  pendingColor = getSelectedColor(bike);
+  // Show commitment confirmation first (psychology)
+  const commitTitle = document.getElementById('commitTitle');
+  const commitSub = document.getElementById('commitSubtitle');
+  if (bike.includes('Ultra Bee')) {
+    if (commitTitle) commitTitle.textContent = 'Smart Move 🧠';
+    if (commitSub) commitSub.textContent = 'You picked the BEST VALUE bike — the most power per dollar. Over 200 riders chose this one last month.';
+  } else if (bike.includes('Light Bee')) {
+    if (commitTitle) commitTitle.textContent = 'Solid Pick! 💪';
+    if (commitSub) commitSub.textContent = 'The Light Bee X is our #1 seller — trusted by 500+ riders. You\'re about to save $1,599 vs dealer price.';
+  } else {
+    if (commitTitle) commitTitle.textContent = 'Nice Choice! 🔥';
+    if (commitSub) commitSub.textContent = 'The Hyper Bee is compact, nimble, and seriously fun — and you\'re saving $999 vs any dealer. Let\'s lock it in.';
+  }
+  var commitOv = document.getElementById('commitOverlay');
+  if (commitOv) commitOv.classList.add('open');
+}
+
+function proceedToOrder() {
+  var commitOv = document.getElementById('commitOverlay');
+  if (commitOv) commitOv.classList.remove('open');
+  currentBike = pendingBike;
+
+  // If checking out from cart with multiple bikes, show summary
+  var orderBikeName = document.getElementById('orderBikeName');
+  if (pendingBike === 'Multiple Bikes' && cart.length > 1) {
+    const summary = cart.map(item => item.name.replace('2026 Surron ', '') + ' (' + item.color + ')').join(' + ');
+    if (orderBikeName) orderBikeName.textContent = summary;
+  } else {
+    if (orderBikeName) orderBikeName.textContent = currentBike;
+  }
+
+  var orderFormWrap = document.getElementById('orderFormWrap');
+  if (orderFormWrap) orderFormWrap.style.display = 'block';
+  var orderSuccess = document.getElementById('orderSuccess');
+  if (orderSuccess) orderSuccess.classList.remove('show');
+  var orderForm = document.getElementById('orderForm');
+  if (orderForm) orderForm.reset();
+  var orderOverlay = document.getElementById('orderOverlay');
+  if (orderOverlay) orderOverlay.classList.add('open');
+  lockBody();
+}
+
+function closeOrder() {
+  var orderOverlay = document.getElementById('orderOverlay');
+  if (orderOverlay) orderOverlay.classList.remove('open');
+  var orderForm = document.getElementById('orderForm');
+  if (orderForm) orderForm.reset();
+  var orderFormWrap = document.getElementById('orderFormWrap');
+  if (orderFormWrap) orderFormWrap.style.display = 'block';
+  var orderSuccess = document.getElementById('orderSuccess');
+  if (orderSuccess) orderSuccess.classList.remove('show');
+  unlockBody();
+}
+
+var isSubmittingOrder = false;
+function submitOrder(e) {
+  e.preventDefault();
+  if (isSubmittingOrder) { showToast('Order is being submitted...', 'info'); return; }
+  isSubmittingOrder = true;
+
+  const selectedColor = pendingColor || getSelectedColor(currentBike);
+
+  // If cart checkout, build cart summary for the email
+  let bikeInfo = currentBike;
+  let colorInfo = selectedColor;
+  let totalPrice = '';
+  if (currentBike === 'Multiple Bikes' && cart.length > 1) {
+    bikeInfo = cart.map(item => item.name).join(' + ');
+    colorInfo = cart.map(item => item.name.replace('2026 Surron ', '') + ': ' + item.color).join(', ');
+    totalPrice = '$' + cart.reduce((s, i) => s + i.price, 0).toLocaleString();
+  }
+
+  const oAddress = document.getElementById('oAddress');
+  const oCity = document.getElementById('oCity');
+  const oState = document.getElementById('oState');
+  const oZip = document.getElementById('oZip');
+  const oCountry = document.getElementById('oCountry');
+  const fullAddress = (oAddress ? oAddress.value : '') +
+    (document.getElementById('oAddress2') && document.getElementById('oAddress2').value ? ', ' + document.getElementById('oAddress2').value : '') +
+    ', ' + (oCity ? oCity.value : '') +
+    ', ' + (oState ? oState.value : '') +
+    ' ' + (oZip ? oZip.value : '') +
+    ', ' + (oCountry ? oCountry.value : 'United States');
+
+  const data = {
+    bike: bikeInfo,
+    color: colorInfo,
+    total: totalPrice,
+    name: (document.getElementById('oName') || {}).value || '',
+    phone: (document.getElementById('oPhone') || {}).value || '',
+    email: (document.getElementById('oEmail') || {}).value || '',
+    address: fullAddress,
+    payment: (document.getElementById('oPayment') || {}).value || '',
+    notes: (document.getElementById('oNotes') || {}).value || '',
+    time: new Date().toLocaleString()
+  };
+
+  let orders = [];
+  try { orders = JSON.parse(localStorage.getItem('surronOrders') || '[]'); } catch(e) { orders = []; }
+  orders.push(data);
+  try { localStorage.setItem('surronOrders', JSON.stringify(orders)); } catch(e) {}
+
+  // Send order to your email via Formsubmit
+  const formData = new FormData();
+  formData.append('_subject', 'NEW ORDER: ' + bikeInfo + ' — ' + data.name);
+  formData.append('_template', 'table');
+  formData.append('_captcha', 'false');
+  formData.append('_replyto', data.email);
+  formData.append('_autoresponse', 'Thanks for ordering from Surron King! We received your order for ' + data.bike + '. We\'ll be in touch within 24 hours to confirm details and arrange payment. If you have questions, reply to this email or text us. — Surron King Team');
+  formData.append('Bike', data.bike);
+  formData.append('Color', data.color);
+  if (totalPrice) formData.append('Cart Total', totalPrice);
+  formData.append('Customer Name', data.name);
+  formData.append('Phone', data.phone);
+  formData.append('Customer Email', data.email);
+  formData.append('Shipping Address', data.address);
+  formData.append('Payment Method', data.payment);
+  formData.append('Notes', data.notes);
+  formData.append('Order Time', data.time);
+  fetch('https://formsubmit.co/ajax/' + atob('bWF4cGlsaWNoODhAZ21haWwuY29t'), {
+    method: 'POST',
+    body: formData
+  }).then(function(r) {
+    if (!r.ok) throw new Error('Failed');
+    return r;
+  }).then(function() {
+    cart = [];
+    saveCart();
+    renderCart();
+    // Close cart drawer if open
+    var drawer = document.getElementById('cartDrawer');
+    if (drawer) drawer.classList.remove('open');
+    showToast('Order submitted! Check your email for confirmation.', 'success');
+    var orderFormWrap = document.getElementById('orderFormWrap');
+    if (orderFormWrap) orderFormWrap.style.display = 'none';
+    var orderSuccess = document.getElementById('orderSuccess');
+    if (orderSuccess) orderSuccess.classList.add('show');
+    launchConfetti();
+    isSubmittingOrder = false;
+  }).catch(function() {
+    showToast('Failed to submit order. Please try again or email us directly at surronking@gmail.com', 'error');
+    isSubmittingOrder = false;
+  });
+}
 
 // ========== TOAST NOTIFICATIONS ==========
 function showToast(message, type = 'info', duration = 3000) {
@@ -5067,10 +5519,17 @@ function buyExplosion(button) {
   }
 }
 
-// Hook into all BUY NOW buttons for explosion effect
+// Hook into all BUY NOW buttons
 document.querySelectorAll('.btn-buy').forEach(btn => {
+  const originalClick = btn.getAttribute('onclick') || '';
+  btn.removeAttribute('onclick');
   btn.addEventListener('click', function(e) {
     buyExplosion(this);
+    // Small delay so explosion is visible before modal opens
+    setTimeout(() => {
+      const match = originalClick.match(/openOrder\('([^']+)'\)/);
+      if (match && match[1]) openOrder(match[1]);
+    }, 300);
   });
 });
 
@@ -5257,6 +5716,7 @@ function createPurchaseMusic() {
 }
 
 function toggleMusic() {
+  const btn = null; // musicBtn element removed from HTML
   const canvas = document.getElementById('vizCanvas');
 
   if (!musicPlaying) {
@@ -5266,6 +5726,7 @@ function toggleMusic() {
       musicCtx.resume();
       musicGain.gain.linearRampToValueAtTime(0.15, musicCtx.currentTime + 1);
     }
+    if (btn) { btn.classList.add('playing'); btn.textContent = '🔊'; }
     if (canvas) canvas.classList.add('active');
     musicPlaying = true;
     drawVisualizer();
@@ -5274,6 +5735,7 @@ function toggleMusic() {
       musicGain.gain.linearRampToValueAtTime(0.001, musicCtx.currentTime + 0.5);
       setTimeout(() => musicCtx.suspend(), 600);
     }
+    if (btn) { btn.classList.remove('playing'); btn.textContent = '🎵'; }
     if (canvas) canvas.classList.remove('active');
     musicPlaying = false;
     if (vizAnimFrame) cancelAnimationFrame(vizAnimFrame);
@@ -5362,7 +5824,7 @@ const chatResponses = [
   { triggers: ['which', 'recommend', 'best', 'should i', 'beginner', 'first bike', 'starter'], response: 'It depends on what you need! For a great all-around bike: Light Bee X ($4,300). For maximum power and range: Ultra Bee ($5,600). For a lightweight, budget-friendly option: Hyper Bee ($2,900). What matters most to you — speed, range, or price?' },
   { triggers: ['weight', 'heavy', 'light', 'lbs', 'pounds'], response: 'Hyper Bee is the lightest at 86 lbs, then the Light Bee X at 126 lbs, and the Ultra Bee at 195 lbs. All are significantly lighter than gas motorcycles.' },
   { triggers: ['hello', 'hi', 'hey', 'sup', 'what\'s up', 'yo'], response: 'Hey! Welcome to Surron King. I can help you with anything — bike specs, pricing, shipping, comparisons, payment options — you name it. What are you looking for?' },
-  { triggers: ['order', 'buy', 'purchase', 'how to order', 'how do i buy', 'cart'], response: 'Easy! Scroll to the bike you want — you can hit "BUY NOW" to order right away, or "ADD TO CART" if you want to grab multiple bikes first. Once you\'re ready, open your cart (the 🛒 icon) and hit Checkout. You\'ll be taken to our secure Stripe checkout to complete your purchase.' },
+  { triggers: ['order', 'buy', 'purchase', 'how to order', 'how do i buy', 'cart'], response: 'Easy! Scroll to the bike you want — you can hit "BUY NOW" to order right away, or "ADD TO CART" if you want to grab multiple bikes first. Once you\'re ready, open your cart (the 🛒 icon) and hit Checkout. Fill out the quick form, and our team will reach out within 24 hours to confirm everything and set up payment.' },
   { triggers: ['include', 'come with', 'in the box', 'what do i get'], response: 'Every bike comes with: the bike itself, battery, charger, manual, and a free maintenance kit. Some models include extra accessories. Everything you need to ride right out of the box.' }
 ];
 
@@ -5465,6 +5927,16 @@ function subscribeNewsletter() {
     showToast('Please enter a valid email address.', 'info');
     return;
   }
+  // Also store locally as backup
+  let subs = [];
+  try { subs = JSON.parse(localStorage.getItem('surron_subscribers') || '[]'); } catch(e) {}
+  if (subs.includes(email)) {
+    showToast('You\'re already subscribed!', 'info');
+    return;
+  }
+  subs.push(email);
+  try { localStorage.setItem('surron_subscribers', JSON.stringify(subs)); } catch(e) {}
+
   // Send to your email via Formsubmit
   const formData = new FormData();
   formData.append('_subject', 'New Newsletter Subscriber — Surron King');
@@ -5486,6 +5958,18 @@ function subscribeNewsletter() {
 
 // ========== VIDEO LOADER ==========
 // Loads YouTube embed only when clicked (saves page load time)
+function loadVideo(el, videoId) {
+  // Replace placeholder with actual iframe
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1&rel=0';
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+  iframe.allowFullscreen = true;
+  el.innerHTML = '';
+  el.appendChild(iframe);
+  el.style.cursor = 'default';
+  el.onclick = null;
+}
+
 // ========== ENTRY GATE (Cookies + Terms & Conditions) ==========
 function checkEntryGate() {
   var terms = document.getElementById('entryTerms').checked;
