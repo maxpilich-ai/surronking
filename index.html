@@ -5628,6 +5628,11 @@ function acceptEntryGate() {
     setTimeout(function() { gate.style.display = 'none'; }, 400);
   }
   document.body.style.overflow = '';
+  // Start music right when user enters the site
+  musicAutoStarted = true;
+  if (!musicPlaying && typeof toggleMusic === 'function') {
+    toggleMusic();
+  }
 }
 // Show entry gate if not already accepted
 (function() {
