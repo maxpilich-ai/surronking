@@ -3,7 +3,7 @@
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://surronking.com/</loc>
-    <lastmod>2026-02-21</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <video:video>
@@ -21,5 +21,11 @@
       <video:title>2025/2026 Surron Hyper Bee</video:title>
       <video:description>The 2025/2026 Surron Hyper Bee in action — 5kW motor, 31-mile range, 34 MPH top speed.</video:description>
     </video:video>
+  </url>
+  <url>
+    <loc>https://surronking.com/blog.html</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
