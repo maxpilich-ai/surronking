@@ -4141,7 +4141,55 @@ textarea:focus-visible,
 <!-- MUSIC VISUALIZER -->
 <canvas class="visualizer-canvas" id="vizCanvas"></canvas>
 <!-- Background Music — On My Own by Kyle The Hooligan -->
-<audio id="bgMusic" src="on-my-own.mp3" preload="auto" loop autoplay muted></audio>
+<audio id="bgMusic" src="on-my-own.mp3" preload="auto" loop></audio>
+<script>
+// ISOLATED MUSIC SYSTEM — runs independently of main script
+(function() {
+  var audio = document.getElementById('bgMusic');
+  if (!audio) return;
+  var started = false;
+
+  // Try to start muted playback immediately
+  audio.muted = true;
+  audio.play().catch(function() {});
+
+  function startMusic() {
+    if (started) return;
+    started = true;
+    audio.currentTime = 0;
+    audio.muted = false;
+    audio.volume = 0.3;
+    audio.play().then(function() {
+      // Success — remove all listeners
+      ['click','scroll','wheel','keydown','touchstart','mousedown','pointerdown','mousemove'].forEach(function(e) {
+        document.removeEventListener(e, startMusic, true);
+        window.removeEventListener(e, startMusic, true);
+      });
+    }).catch(function() {
+      // Failed — reset and wait for next interaction
+      started = false;
+      audio.muted = true;
+      audio.play().catch(function() {});
+    });
+  }
+
+  // Listen on EVERYTHING
+  ['click','scroll','wheel','keydown','touchstart','mousedown','pointerdown','mousemove'].forEach(function(e) {
+    document.addEventListener(e, startMusic, true);
+    window.addEventListener(e, startMusic, true);
+  });
+
+  // Expose toggleMusic globally for the music button
+  window.toggleMusic = function() {
+    if (!started) { startMusic(); return; }
+    if (audio.paused) {
+      audio.play().catch(function() {});
+    } else {
+      audio.pause();
+    }
+  };
+})();
+</script>
 
 <!-- LIGHTNING CANVAS -->
 <canvas class="lightning-canvas" id="lightningCanvas"></canvas>
@@ -4273,8 +4321,7 @@ setTimeout(() => {
   if (pl) pl.classList.add('hidden');
 }, 4000);
 
-// ========== MUSIC SYSTEM (REMOVED - NOW HANDLED IN UNIFIED MUSIC PLAYER BELOW) ==========
-// The unified music system is defined later in the code
+// Music is handled in its own script tag near the audio element
 
 // ========== IMAGE UPLOAD SYSTEM (PER-COLOR) ==========
 // Color map for each bike
@@ -5284,111 +5331,8 @@ document.querySelectorAll('.btn-buy').forEach(btn => {
   });
 });
 
-// ========== MUSIC PLAYER — On My Own by Kyle The Hooligan ==========
-var audioEl = null;
-var musicUnmuted = false;
-var vizAnimFrame = null;
-
-// Step 1: Get audio element and start it muted on page load
-audioEl = document.getElementById('bgMusic');
-if (audioEl) {
-  audioEl.muted = true;
-  audioEl.play().catch(function() {});
-}
-
-// Step 2: On ANY interaction, unmute and restart from beginning
-function unmuteMusic() {
-  if (musicUnmuted || !audioEl) return;
-  musicUnmuted = true;
-  audioEl.currentTime = 0;
-  audioEl.muted = false;
-  audioEl.volume = 0.3;
-  audioEl.play().catch(function() {
-    // Play failed — reset and try again on next interaction
-    musicUnmuted = false;
-    audioEl.muted = true;
-    audioEl.play().catch(function() {});
-    attachMusicListeners();
-  });
-  // Start visualizer
-  var canvas = document.getElementById('vizCanvas');
-  if (canvas) canvas.classList.add('active');
-  animateVisualizer();
-  // Remove listeners
-  removeMusicListeners();
-}
-
-// Step 3: Toggle pause/play
-function toggleMusic() {
-  if (!audioEl) return;
-  if (!musicUnmuted) { unmuteMusic(); return; }
-  var canvas = document.getElementById('vizCanvas');
-  if (audioEl.paused) {
-    audioEl.play().catch(function() {});
-    if (canvas) canvas.classList.add('active');
-    animateVisualizer();
-  } else {
-    audioEl.pause();
-    if (canvas) canvas.classList.remove('active');
-    if (vizAnimFrame) { cancelAnimationFrame(vizAnimFrame); vizAnimFrame = null; }
-  }
-}
-
-// Step 4: Simulated visualizer (no AudioContext needed = no routing issues)
-var vizPhase = 0;
-function animateVisualizer() {
-  var canvas = document.getElementById('vizCanvas');
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  if (!ctx) return;
-  canvas.width = window.innerWidth;
-  canvas.height = 60;
-  var barCount = 64;
-  var barWidth = canvas.width / barCount;
-
-  function draw() {
-    if (!audioEl || audioEl.paused || audioEl.muted) {
-      if (vizAnimFrame) { cancelAnimationFrame(vizAnimFrame); vizAnimFrame = null; }
-      return;
-    }
-    vizAnimFrame = requestAnimationFrame(draw);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    vizPhase += 0.06;
-    for (var i = 0; i < barCount; i++) {
-      var h1 = Math.sin(vizPhase + i * 0.18) * 0.3;
-      var h2 = Math.sin(vizPhase * 1.4 + i * 0.09) * 0.25;
-      var h3 = Math.sin(vizPhase * 0.6 + i * 0.25) * 0.2;
-      var h4 = Math.cos(vizPhase * 0.8 + i * 0.14) * 0.15;
-      var barHeight = Math.abs(h1 + h2 + h3 + h4) * canvas.height * 1.2 + 2;
-      var hue = 270 + (i / barCount) * 100;
-      ctx.fillStyle = 'hsla(' + hue + ', 80%, 55%, 0.6)';
-      ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
-    }
-  }
-  draw();
-}
-
-// Step 5: Attach listeners for ALL interaction types
-var musicEvents = ['click', 'scroll', 'wheel', 'keydown', 'touchstart', 'mousedown', 'pointerdown', 'mousemove'];
-function onMusicInteract() { unmuteMusic(); }
-function attachMusicListeners() {
-  musicEvents.forEach(function(e) {
-    document.addEventListener(e, onMusicInteract, true);
-    window.addEventListener(e, onMusicInteract, true);
-  });
-}
-function removeMusicListeners() {
-  musicEvents.forEach(function(e) {
-    document.removeEventListener(e, onMusicInteract, true);
-    window.removeEventListener(e, onMusicInteract, true);
-  });
-}
-attachMusicListeners();
-
-window.addEventListener('resize', () => {
-  const vc = document.getElementById('vizCanvas');
-  if (vc) { vc.width = window.innerWidth; }
-});
+// Music system is now in its own isolated script tag above (near the audio element)
+// toggleMusic() is exposed globally from there
 
 // ========== AI CHATBOT ==========
 function toggleChatbot() {
