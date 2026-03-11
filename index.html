@@ -2431,8 +2431,11 @@ footer {
   right: calc(2rem + env(safe-area-inset-right, 0px));
   width: 50px;
   height: 50px;
-  background: rgba(155,48,255,0.1);
+  background: rgba(155,48,255,0.15);
   border: 2px solid var(--purple);
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: bold;
   border-radius: 50%;
   display: none;
   align-items: center;
@@ -3062,6 +3065,36 @@ textarea:focus-visible,
   section { padding: 1rem 0 !important; }
 }
 
+/* REVIEW SECTION STYLES */
+#reviews { padding: 4rem 2rem; position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; }
+.review-container { max-width: 600px; margin: 2rem auto 0; }
+.review-form { display: flex; flex-direction: column; gap: 1.5rem; }
+.form-group select { padding: 0.9rem; background: rgba(155,48,255,0.03); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.95rem; transition: all 0.3s; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239b30ff' d='M6 9L1 4h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.9rem center; padding-right: 2.5rem; }
+.form-group select:hover { border-color: var(--purple); background-color: rgba(155,48,255,0.05); }
+.form-group select:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 20px rgba(155,48,255,0.2); background-color: rgba(155,48,255,0.05); }
+.form-group select option { background: var(--card-bg); color: var(--text); padding: 0.75rem; }
+.star-rating { display: flex; gap: 0.5rem; align-items: center; margin: 0.5rem 0 1rem 0; }
+.star { width: 3rem; height: 3rem; background: transparent; border: none; font-size: 2.5rem; color: rgba(155,48,255,0.3); cursor: pointer; transition: all 0.2s ease; padding: 0; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
+.star:hover, .star:focus { outline: none; color: #ffd700; transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)); }
+.star.active { color: #ffd700; filter: drop-shadow(0 0 12px rgba(255,215,0,0.7)); }
+.star.selected { color: #ffd700; filter: drop-shadow(0 0 12px rgba(255,215,0,0.7)); }
+.rating-message { min-height: 2rem; display: flex; align-items: center; padding: 0.75rem; border-radius: 6px; font-size: 0.9rem; margin-top: 0.5rem; opacity: 0; transition: opacity 0.3s ease; }
+.rating-message.show { opacity: 1; }
+.rating-message.warning { background: rgba(255,107,53,0.1); border: 1px solid rgba(255,107,53,0.3); color: #ff9970; }
+.rating-message.success { background: rgba(57,255,20,0.1); border: 1px solid rgba(57,255,20,0.3); color: #39ff14; }
+.review-message { min-height: 0; overflow: hidden; transition: all 0.4s ease; border-radius: 6px; }
+.review-message.show { padding: 1rem; border: 1px solid; min-height: auto; }
+.review-message.success { background: rgba(57,255,20,0.1); border-color: rgba(57,255,20,0.3); color: #39ff14; }
+.review-message.error { background: rgba(255,107,53,0.1); border-color: rgba(255,107,53,0.3); color: #ff9970; }
+.review-message.warning { background: rgba(255,107,53,0.1); border-color: rgba(255,107,53,0.3); color: #ff9970; }
+@media (max-width: 768px) { .star { width: 2.5rem; height: 2.5rem; font-size: 2rem; } .star-rating { gap: 0.3rem; } }
+@media (max-width: 480px) { .star { width: 2.2rem; height: 2.2rem; font-size: 1.8rem; } .star-rating { gap: 0.2rem; } }
+
+/* EMAIL INTERCEPT POPUP */
+.email-intercept-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(6px); }
+.email-intercept-overlay.open { display:flex; }
+.email-intercept-modal { background:var(--card-bg,#111); border:1px solid var(--card-border,#222); border-radius:16px; max-width:400px; width:90%; position:relative; box-shadow:0 20px 60px rgba(155,48,255,0.2); }
+
 </style>
 </head>
 <body>
@@ -3106,7 +3139,9 @@ textarea:focus-visible,
     <li><a href="#why">Why Us</a></li>
     <li><a href="#culture">Culture</a></li>
     <li><a href="#compare">Compare</a></li>
+    <li><a href="#reviews">Reviews</a></li>
     <li><a href="#faq">FAQ</a></li>
+    <li><a href="blog.html">Blog</a></li>
     <li><a href="#bikes" class="nav-cta">BUY NOW</a></li>
   </ul>
   <button type="button" class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
@@ -3120,7 +3155,9 @@ textarea:focus-visible,
   <a href="#why" onclick="closeMenu()">Why Us</a>
   <a href="#culture" onclick="closeMenu()">Culture</a>
   <a href="#compare" onclick="closeMenu()">Compare</a>
+  <a href="#reviews" onclick="closeMenu()">Reviews</a>
   <a href="#faq" onclick="closeMenu()">FAQ</a>
+  <a href="blog.html" onclick="closeMenu()">Blog</a>
   <a href="#bikes" onclick="closeMenu()">BUY NOW</a>
 </div>
 
@@ -3778,7 +3815,7 @@ textarea:focus-visible,
   <div class="testimonials-slider">
     <div class="testimonial active">
       <div class="testimonial-badge">Verified Buyer</div>
-      <p class="testimonial-text">"bro i was gonna buy from a dealer near me but they wanted like 6500 for the ultra bee lol. got it from surron king for way less and it showed up in perfect condition. thing rips"</p>
+      <p class="testimonial-text">"dealer near me wanted 6500 for the ultra bee lol. got it from surron king for way less. shipping did take about 5 weeks which felt long but the bike came double boxed and perfect. thing absolutely rips"</p>
       <div class="testimonial-author">— Alex M.</div>
       <div class="testimonial-details">Ultra Bee · Houston, TX · Jan 2026</div>
     </div>
@@ -3790,7 +3827,7 @@ textarea:focus-visible,
     </div>
     <div class="testimonial">
       <div class="testimonial-badge">Verified Buyer</div>
-      <p class="testimonial-text">"i was lowkey nervous ordering a bike off a website but they kept me updated the whole time. texted them at like 11pm and they still got back to me. bike is absolutely insane btw"</p>
+      <p class="testimonial-text">"not gonna lie i was sketched out ordering a bike online for this much money. but they answered all my questions fast and kept me updated with tracking. only complaint is the seat is kinda stiff out the box but you get used to it. other than that the bike is insane"</p>
       <div class="testimonial-author">— Casey R.</div>
       <div class="testimonial-details">Ultra Bee · Orlando, FL · Feb 2026</div>
     </div>
@@ -3807,6 +3844,52 @@ textarea:focus-visible,
     <button type="button" class="slider-dot" onclick="showTestimonial(1)" aria-label="Show testimonial 2"></button>
     <button type="button" class="slider-dot" onclick="showTestimonial(2)" aria-label="Show testimonial 3"></button>
     <button type="button" class="slider-dot" onclick="showTestimonial(3)" aria-label="Show testimonial 4"></button>
+  </div>
+</section>
+
+<!-- LEAVE A REVIEW -->
+<section id="reviews">
+  <h2 class="section-title glitch-text" data-text="LEAVE A REVIEW">LEAVE A REVIEW</h2>
+  <div class="section-subtitle">Bought a bike from us? Let us know how it went.</div>
+
+  <div class="review-container">
+    <form class="review-form" id="reviewForm" onsubmit="handleReviewSubmit(event)">
+      <div class="form-group">
+        <label for="rName">Your Name</label>
+        <input type="text" id="rName" name="name" placeholder="John Doe" required>
+      </div>
+      <div class="form-group">
+        <label for="rEmail">Email Address</label>
+        <input type="email" id="rEmail" name="email" placeholder="john@example.com" required>
+      </div>
+      <div class="form-group">
+        <label for="rBike">Which bike did you buy?</label>
+        <select id="rBike" name="bike" required>
+          <option value="">-- Select a bike --</option>
+          <option value="Light Bee X">Light Bee X</option>
+          <option value="Ultra Bee">Ultra Bee</option>
+          <option value="Hyper Bee">Hyper Bee</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>How would you rate your experience?</label>
+        <div class="star-rating" id="starRating">
+          <button type="button" class="star" data-rating="1" aria-label="1 star">★</button>
+          <button type="button" class="star" data-rating="2" aria-label="2 stars">★</button>
+          <button type="button" class="star" data-rating="3" aria-label="3 stars">★</button>
+          <button type="button" class="star" data-rating="4" aria-label="4 stars">★</button>
+          <button type="button" class="star" data-rating="5" aria-label="5 stars">★</button>
+        </div>
+        <input type="hidden" id="rRating" name="rating" value="">
+        <div id="ratingMessage" class="rating-message" style="display:none;"></div>
+      </div>
+      <div class="form-group">
+        <label for="rText">Your Review</label>
+        <textarea id="rText" name="text" placeholder="Tell us about your experience with the bike, shipping, and our service..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">SUBMIT REVIEW</button>
+      <div id="reviewMessage" class="review-message"></div>
+    </form>
   </div>
 </section>
 
@@ -3923,6 +4006,7 @@ textarea:focus-visible,
 <section>
   <h2 class="section-title glitch-text" data-text="GET IN TOUCH">GET IN TOUCH</h2>
   <div class="section-subtitle">Questions? We're here to help. Text us or send a message below.</div>
+  <p style="text-align:center;color:var(--text-muted);font-size:0.8rem;margin-top:0.5rem;margin-bottom:1.5rem;">⚡ <strong>Quick tip:</strong> Our chatbot (bottom right) can answer most questions instantly — try it first!</p>
 
   <div style="text-align:center;margin-bottom:2rem;">
     <a href="sms:6124949944" class="btn btn-primary btn-magnetic" style="display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;">💬 TEXT US</a>
@@ -3965,6 +4049,8 @@ textarea:focus-visible,
         <a href="#why-us" class="footer-link">Why Us</a>
         <a href="#about" class="footer-link">Our Story</a>
         <a href="#faq" class="footer-link">FAQ</a>
+        <a href="#reviews" class="footer-link">Leave a Review</a>
+        <a href="blog.html" class="footer-link">Blog</a>
       </div>
       <div class="footer-col">
         <h3>Policies</h3>
@@ -3976,7 +4062,7 @@ textarea:focus-visible,
       <div class="footer-col">
         <h3>Contact</h3>
         <a href="sms:6124949944" class="footer-link">💬 Text Us</a>
-        <a href="mailto:surronking@gmail.com" class="footer-link">📧 surronking@gmail.com</a>
+        <a href="#" onclick="showEmailIntercept();return false" class="footer-link">📧 surronking@gmail.com</a>
         <p style="color:var(--text-muted);font-size:0.75rem;margin-top:0.8rem;opacity:0.6;">📱 Socials coming soon — we're just getting started.</p>
       </div>
     </div>
@@ -4004,6 +4090,20 @@ textarea:focus-visible,
   <div class="policy-modal">
     <button type="button" class="order-close" onclick="closePolicy()" aria-label="Close policy">&times;</button>
     <div id="policyContent"></div>
+  </div>
+</div>
+
+<!-- EMAIL INTERCEPT POPUP -->
+<div class="email-intercept-overlay" id="emailIntercept" onclick="if(event.target===this)closeEmailIntercept()">
+  <div class="email-intercept-modal">
+    <button type="button" class="order-close" onclick="closeEmailIntercept()" aria-label="Close">&times;</button>
+    <div style="text-align:center;padding:1.5rem;">
+      <div style="font-size:2.5rem;margin-bottom:0.75rem;">💬</div>
+      <h3 style="font-family:'Russo One',sans-serif;color:#fff;margin-bottom:0.75rem;font-size:1.2rem;">Before you email us...</h3>
+      <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem;">Our support chatbot can answer most questions instantly — pricing, specs, shipping, order status, and more. Try it first and get an answer in seconds!</p>
+      <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:0.75rem;" onclick="closeEmailIntercept();toggleChatbot();">⚡ Chat with us now</button>
+      <button type="button" style="width:100%;padding:0.75rem;background:transparent;border:1px solid var(--card-border);border-radius:8px;color:var(--text-muted);font-family:'Inter',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--card-border)'" onclick="closeEmailIntercept();window.location.href='mailto:surronking@gmail.com';">I still want to email</button>
+    </div>
   </div>
 </div>
 
@@ -4040,6 +4140,9 @@ textarea:focus-visible,
 
 <!-- MUSIC VISUALIZER -->
 <canvas class="visualizer-canvas" id="vizCanvas"></canvas>
+<!-- SoundCloud Hidden Player — On My Own by Kyle The Hooligan -->
+<iframe id="scPlayer" style="display:none" width="0" height="0" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/693522558&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
+<script src="https://w.soundcloud.com/player/api.js"></script>
 
 <!-- LIGHTNING CANVAS -->
 <canvas class="lightning-canvas" id="lightningCanvas"></canvas>
@@ -5203,244 +5306,88 @@ document.querySelectorAll('.btn-buy').forEach(btn => {
   });
 });
 
-// ========== PURCHASE PSYCHOLOGY MUSIC & VISUALIZER ==========
-// Uses: major keys (positive emotion), 68 BPM (slower = longer browsing),
-// warm sub-bass (premium feel), ascending arpeggios (optimism/excitement),
-// slight detuning (richness/warmth), and gentle dynamics (comfort)
-let musicCtx = null;
-let musicGain = null;
+// ========== SOUNDCLOUD MUSIC PLAYER — On My Own by Kyle The Hooligan ==========
+let scWidget = null;
+let scReady = false;
 let vizAnimFrame = null;
-let analyser = null;
-let beatInterval = null;
 
-function createPurchaseMusic() {
-  musicCtx = new (window.AudioContext || window.webkitAudioContext)();
-  analyser = musicCtx.createAnalyser();
-  analyser.fftSize = 256;
-  analyser.smoothingTimeConstant = 0.85;
-
-  musicGain = musicCtx.createGain();
-  musicGain.gain.value = 0.0;
-  // Fade in gently (comfort)
-  musicGain.gain.linearRampToValueAtTime(0.15, musicCtx.currentTime + 2);
-
-  // Warm reverb via convolver simulation (delay feedback)
-  const delay = musicCtx.createDelay();
-  delay.delayTime.value = 0.12;
-  const feedback = musicCtx.createGain();
-  feedback.gain.value = 0.3;
-  const delayFilter = musicCtx.createBiquadFilter();
-  delayFilter.type = 'lowpass';
-  delayFilter.frequency.value = 2000;
-  delay.connect(delayFilter);
-  delayFilter.connect(feedback);
-  feedback.connect(delay);
-  delay.connect(musicGain);
-
-  // Dry + wet mix
-  const dryGain = musicCtx.createGain();
-  dryGain.gain.value = 0.7;
-  const wetGain = musicCtx.createGain();
-  wetGain.gain.value = 0.3;
-  dryGain.connect(musicGain);
-  wetGain.connect(delay);
-  musicGain.connect(analyser);
-  analyser.connect(musicCtx.destination);
-
-  // WARM PAD — Major 7th chords (happy, luxurious feel)
-  // Chord progression: Cmaj7 → Fmaj7 → Am7 → Gmaj7 (all feel-good)
-  const chordProgressions = [
-    [130.81, 164.81, 196.00, 246.94],  // Cmaj7
-    [174.61, 220.00, 261.63, 329.63],  // Fmaj7
-    [220.00, 261.63, 329.63, 392.00],  // Am7
-    [196.00, 246.94, 293.66, 369.99]   // Gmaj7
-  ];
-  let currentChord = 0;
-  let padOscs = [];
-
-  function playPadChord(chord) {
-    // Fade out old pad
-    padOscs.forEach(o => {
-      o.gain.gain.linearRampToValueAtTime(0.001, musicCtx.currentTime + 0.8);
-      setTimeout(() => { try { o.osc.stop(); o.osc2.stop(); } catch(e){} }, 1000);
+// Initialize SoundCloud widget once API loads
+function initSCWidget() {
+  const iframe = document.getElementById('scPlayer');
+  if (!iframe || typeof SC === 'undefined') return;
+  scWidget = SC.Widget(iframe);
+  scWidget.bind(SC.Widget.Events.READY, function() {
+    scReady = true;
+    scWidget.setVolume(30); // Background level volume
+    // Loop the track
+    scWidget.bind(SC.Widget.Events.FINISH, function() {
+      scWidget.seekTo(0);
+      scWidget.play();
     });
-    padOscs = [];
-
-    chord.forEach((freq, i) => {
-      // Main oscillator
-      const osc = musicCtx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      // Slightly detuned copy for warmth/richness
-      const osc2 = musicCtx.createOscillator();
-      osc2.type = 'triangle';
-      osc2.frequency.value = freq * 1.003; // 3 cents sharp = warm chorus
-      const g = musicCtx.createGain();
-      g.gain.value = 0.001;
-      g.gain.linearRampToValueAtTime(0.025, musicCtx.currentTime + 1.2);
-      // Gentle tremolo (subconscious movement)
-      const lfo = musicCtx.createOscillator();
-      lfo.frequency.value = 0.15 + i * 0.05;
-      const lfoG = musicCtx.createGain();
-      lfoG.gain.value = 0.008;
-      lfo.connect(lfoG);
-      lfoG.connect(g.gain);
-      lfo.start();
-      osc.connect(g);
-      osc2.connect(g);
-      g.connect(dryGain);
-      g.connect(wetGain);
-      osc.start();
-      osc2.start();
-      padOscs.push({ osc, osc2, gain: g });
-    });
-  }
-
-  // SUB BASS — deep warmth, "premium" feel
-  function playSubBass(freq, time) {
-    const sub = musicCtx.createOscillator();
-    sub.type = 'sine';
-    sub.frequency.value = freq / 2; // One octave below root
-    const subG = musicCtx.createGain();
-    subG.gain.setValueAtTime(0.001, time);
-    subG.gain.linearRampToValueAtTime(0.08, time + 0.3);
-    subG.gain.linearRampToValueAtTime(0.001, time + 2.8);
-    sub.connect(subG);
-    subG.connect(dryGain);
-    sub.start(time);
-    sub.stop(time + 3);
-  }
-
-  // ASCENDING ARPEGGIO — creates optimism, forward momentum
-  function playArpeggio(chord, startTime) {
-    chord.forEach((freq, i) => {
-      const osc = musicCtx.createOscillator();
-      osc.type = 'sine';
-      const t = startTime + i * 0.22;
-      const g = musicCtx.createGain();
-      g.gain.setValueAtTime(0.001, t);
-      g.gain.linearRampToValueAtTime(0.04, t + 0.05);
-      g.gain.linearRampToValueAtTime(0.001, t + 0.6);
-      // Soft filter for warmth
-      const filt = musicCtx.createBiquadFilter();
-      filt.type = 'lowpass';
-      filt.frequency.value = 1500;
-      osc.connect(filt);
-      filt.connect(g);
-      g.connect(dryGain);
-      g.connect(wetGain);
-      osc.frequency.value = freq * 2; // Higher octave for sparkle
-      osc.start(t);
-      osc.stop(t + 0.7);
-    });
-  }
-
-  // GENTLE PULSE — soft kick at 68 BPM (heartbeat-like, comforting)
-  function playPulse(time) {
-    const kick = musicCtx.createOscillator();
-    kick.frequency.setValueAtTime(80, time);
-    kick.frequency.exponentialRampToValueAtTime(30, time + 0.2);
-    const kG = musicCtx.createGain();
-    kG.gain.setValueAtTime(0.1, time);
-    kG.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
-    kick.connect(kG);
-    kG.connect(dryGain);
-    kick.start(time);
-    kick.stop(time + 0.4);
-  }
-
-  // Start first chord
-  playPadChord(chordProgressions[0]);
-
-  // Schedule progression loop: 68 BPM, chord changes every 4 beats
-  const bpm = 68;
-  const beat = 60 / bpm;
-  const barLength = beat * 4;
-
-  function scheduleBar() {
-    const now = musicCtx.currentTime;
-    const chord = chordProgressions[currentChord];
-    const root = chord[0];
-
-    // Sub bass on beat 1
-    playSubBass(root, now);
-    // Gentle pulse on beats 1 and 3
-    playPulse(now);
-    playPulse(now + beat * 2);
-    // Ascending arpeggio on beat 2 (creates anticipation)
-    playArpeggio(chord, now + beat);
-
-    currentChord = (currentChord + 1) % chordProgressions.length;
-    // Change pad chord for next bar
-    setTimeout(() => {
-      if (musicPlaying) playPadChord(chordProgressions[currentChord]);
-    }, (barLength - 1) * 1000);
-  }
-
-  scheduleBar();
-  beatInterval = setInterval(() => {
-    if (musicPlaying) scheduleBar();
-  }, barLength * 1000);
-
-  return beatInterval;
+  });
 }
+// Try to init immediately and also on window load
+if (document.readyState === 'complete') { setTimeout(initSCWidget, 500); }
+else { window.addEventListener('load', function() { setTimeout(initSCWidget, 500); }); }
 
 function toggleMusic() {
   const canvas = document.getElementById('vizCanvas');
 
+  if (!scReady) {
+    // Try init again if not ready
+    initSCWidget();
+    setTimeout(toggleMusic, 300);
+    return;
+  }
+
   if (!musicPlaying) {
-    if (!musicCtx) {
-      try { beatInterval = createPurchaseMusic(); } catch(e) { return; }
-    } else {
-      musicCtx.resume();
-      musicGain.gain.linearRampToValueAtTime(0.15, musicCtx.currentTime + 1);
-    }
+    scWidget.play();
     if (canvas) canvas.classList.add('active');
     musicPlaying = true;
     drawVisualizer();
   } else {
-    if (musicCtx) {
-      musicGain.gain.linearRampToValueAtTime(0.001, musicCtx.currentTime + 0.5);
-      setTimeout(() => musicCtx.suspend(), 600);
-    }
+    scWidget.pause();
     if (canvas) canvas.classList.remove('active');
     musicPlaying = false;
     if (vizAnimFrame) cancelAnimationFrame(vizAnimFrame);
   }
 }
 
+// Animated visualizer (simulated since we can't get audio data from iframe)
 function drawVisualizer() {
   const canvas = document.getElementById('vizCanvas');
-  if (!canvas || !analyser) return;
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   canvas.width = window.innerWidth;
   canvas.height = 60;
 
-  const bufferLength = analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
+  const barCount = 64;
+  const barWidth = (canvas.width / barCount);
+  let phase = 0;
 
   function draw() {
+    if (!musicPlaying) return;
     vizAnimFrame = requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(dataArray);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    phase += 0.04;
 
-    const barWidth = (canvas.width / bufferLength) * 2.5;
-    let x = 0;
-    for (let i = 0; i < bufferLength; i++) {
-      const barHeight = (dataArray[i] / 255) * canvas.height;
-      // Purple to green gradient matching site theme
-      const hue = 270 + (i / bufferLength) * 100;
+    for (let i = 0; i < barCount; i++) {
+      // Create organic-looking motion using multiple sine waves
+      const h1 = Math.sin(phase + i * 0.15) * 0.3;
+      const h2 = Math.sin(phase * 1.3 + i * 0.08) * 0.25;
+      const h3 = Math.sin(phase * 0.7 + i * 0.22) * 0.2;
+      const h4 = Math.cos(phase * 0.5 + i * 0.12) * 0.15;
+      const barHeight = Math.abs(h1 + h2 + h3 + h4) * canvas.height * 1.1 + 3;
+      const hue = 270 + (i / barCount) * 100;
       ctx.fillStyle = 'hsla(' + hue + ', 80%, 55%, 0.6)';
-      // Rounded top bars (roundRect fallback for older browsers)
       ctx.beginPath();
       if (ctx.roundRect) {
-        ctx.roundRect(x, canvas.height - barHeight, barWidth - 1, barHeight, 2);
+        ctx.roundRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight, 2);
       } else {
-        ctx.rect(x, canvas.height - barHeight, barWidth - 1, barHeight);
+        ctx.rect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
       }
       ctx.fill();
-      x += barWidth;
     }
   }
   draw();
@@ -5485,14 +5432,43 @@ const chatResponses = [
   { triggers: ['license', 'legal', 'registration', 'street legal'], response: 'Licensing requirements vary by location. In most US states, you don\'t need a motorcycle license for these bikes, but regulations differ. We recommend checking your local laws before purchasing.' },
   { triggers: ['middleman', 'dealer', 'cheaper', 'why cheap', 'why less', 'save', 'direct'], response: 'We sell direct to you — no dealership, no middleman, no markup. That\'s how we keep prices $1,000 to $2,400 below what dealers charge for the exact same bikes. Same quality, way better price.' },
   { triggers: ['mod', 'custom', 'upgrade', 'part'], response: 'Absolutely! The Surron community is huge on mods and customization. We carry parts and can point you to guides. It\'s your bike — build it however you want.' },
-  { triggers: ['return', 'refund', 'policy', 'cancel'], response: 'We stand behind every bike we ship. If it arrives damaged, just hit us up within 48 hours with some photos and we\'ll get you a replacement or your money back — you just cover the return shipping. We always recommend giving your bike a look-over right when it shows up!' },
+  { triggers: ['return', 'refund', 'policy', 'cancel'], response: 'We stand behind every bike we ship. If anything arrives damaged, just send us some photos within 48 hours and you choose what happens — full replacement, full refund, or we make it right another way. It\'s completely up to you. We always recommend giving your bike a quick look-over when it shows up, but we\'ve got you covered.' },
   { triggers: ['broke', 'break', 'repair', 'fix', 'issue', 'problem'], response: 'Reach out to us and we\'ll help troubleshoot or point you in the right direction. We also carry replacement parts at solid prices. Our support team responds within 2 hours.' },
   { triggers: ['contact', 'email', 'phone', 'reach', 'talk', 'human', 'real person'], response: 'You can reach our team at surronking@gmail.com — we respond within 2 hours during business hours. You can also use the contact form on this page. For quick questions, I\'m right here!' },
   { triggers: ['which', 'recommend', 'best', 'should i', 'beginner', 'first bike', 'starter'], response: 'It depends on what you need! For a great all-around bike: Light Bee X ($4,300). For maximum power and range: Ultra Bee ($5,600). For a lightweight, budget-friendly option: Hyper Bee ($2,900). What matters most to you — speed, range, or price?' },
   { triggers: ['weight', 'heavy', 'light', 'lbs', 'pounds'], response: 'Hyper Bee is the lightest at 86 lbs, then the Light Bee X at 126 lbs, and the Ultra Bee at 195 lbs. All are significantly lighter than gas motorcycles.' },
   { triggers: ['hello', 'hi', 'hey', 'sup', 'what\'s up', 'yo'], response: 'Hey! Welcome to Surron King. I can help you with anything — bike specs, pricing, shipping, comparisons, payment options — you name it. What are you looking for?' },
   { triggers: ['order', 'buy', 'purchase', 'how to order', 'how do i buy', 'cart'], response: 'Easy! Scroll to the bike you want — you can hit "BUY NOW" to order right away, or "ADD TO CART" if you want to grab multiple bikes first. Once you\'re ready, open your cart (the 🛒 icon) and hit Checkout. You\'ll be taken to our secure Stripe checkout to complete your purchase.' },
-  { triggers: ['include', 'come with', 'in the box', 'what do i get'], response: 'Every bike comes with: the bike itself, battery, charger, manual, and a free maintenance kit. Some models include extra accessories. Everything you need to ride right out of the box.' }
+  { triggers: ['include', 'come with', 'in the box', 'what do i get'], response: 'Every bike comes with: the bike itself, battery, charger, manual, and a free maintenance kit. Some models include extra accessories. Everything you need to ride right out of the box.' },
+  { triggers: ['legit', 'scam', 'trust', 'real', 'safe', 'fake', 'fraud', 'sketchy', 'reliable'], response: 'We totally understand the concern — buying a bike online is a big purchase. We\'ve delivered 500+ bikes to riders across 30+ countries. All payments go through Stripe (bank-level encryption), and you get full tracking on every order. Check our reviews on the site — those are real customers. If you want to chat before ordering, text us at (612) 494-9944 and we\'ll answer anything.' },
+  { triggers: ['warranty', 'guarantee', 'covered', 'protection'], response: 'We stand behind every bike we ship. If it arrives damaged, contact us within 48 hours with photos and we\'ll get you a replacement or refund. We also carry replacement parts at fair prices and our support team is always here to help with any issues down the road.' },
+  { triggers: ['compare', 'difference', 'vs', 'versus', 'better'], response: 'Quick comparison: Hyper Bee ($2,900) — lightest, best for city. Light Bee X ($4,300) — best all-around, streets + trails. Ultra Bee ($5,600) — most powerful, longest range. Check out our comparison table on the site or our blog for a full breakdown!' },
+  { triggers: ['finance', 'financing', 'installment', 'monthly', 'payment plan', 'affirm', 'klarna'], response: 'Right now we accept full payment through credit/debit cards, PayPal, and Apple Pay at checkout. Some credit cards offer their own installment plans — check with your card provider. We\'re looking into adding financing options soon!' },
+  { triggers: ['kids', 'child', 'age', 'how old', 'young', 'teen', 'teenager'], response: 'These are powerful electric bikes — we recommend riders be at least 16+ depending on the model. The Hyper Bee (34 MPH) is the most beginner-friendly. Always check your local laws for age requirements and make sure younger riders have proper safety gear and supervision.' },
+  { triggers: ['rain', 'water', 'wet', 'waterproof', 'weather'], response: 'Surron bikes can handle light rain and wet conditions, but they\'re not fully waterproof. Avoid deep puddles, submerging the battery, or pressure washing the electronics. For regular wet-weather riding, we recommend adding fender kits.' },
+  { triggers: ['insurance', 'insure'], response: 'We strongly recommend getting insurance for your bike. Requirements vary by state — in most places, e-bikes in this class don\'t require motorcycle insurance, but it\'s smart to have coverage for theft and liability. Check with your local insurance provider for the best options.' },
+  { triggers: ['maintenance', 'upkeep', 'maintain', 'service', 'care'], response: 'Electric bikes need way less maintenance than gas bikes. No oil changes, no spark plugs, no air filters. Just keep the tires inflated, brakes adjusted, chain lubed, and battery charged. We recommend a basic check every few hundred miles.' },
+  { triggers: ['resell', 'resale', 'sell', 'value'], response: 'Surrons hold their value really well. The electric bike market is growing fast and demand is high. Most used Surrons sell for 70-85% of their original price depending on condition and mileage.' },
+  { triggers: ['where', 'location', 'based', 'address', 'warehouse'], response: 'We\'re a US-based company. We work directly with Surron\'s official supply chain — that\'s how we cut out the middleman and keep prices $1,000-$3,000 below dealers. Every order ships with full tracking straight to your door.' },
+  { triggers: ['china', 'overseas', 'ship from', 'where ship', 'factory', 'origin'], response: 'We work directly with Surron\'s official supply chain to get bikes to you at the lowest possible price. Every bike goes through quality checks before shipping, and you get full tracking from start to finish. That\'s how we save you thousands compared to dealers.' },
+  { triggers: ['assembly', 'assemble', 'put together', 'setup', 'set up', 'build it'], response: 'Your bike arrives almost fully assembled. There\'s minor setup — handlebars, pedals, and a few small things. Takes about 15-20 minutes with basic tools. We include clear instructions, and if you get stuck, just text us and we\'ll walk you through it.' },
+  { triggers: ['test ride', 'try before', 'demo', 'test'], response: 'We don\'t offer test rides since we sell direct online — that\'s how we keep prices thousands below dealers. But if you\'re on the fence, check out our video section and reviews from real riders. And if you have any specific questions about how a bike handles, ask away — we ride these bikes ourselves!' },
+  { triggers: ['trade', 'trade in', 'trade-in', 'old bike', 'swap'], response: 'We don\'t currently offer trade-ins, but we can help you figure out the best bike for your needs. Surrons hold their value really well, so selling your current bike privately is usually the best move before upgrading with us.' },
+  { triggers: ['stock', 'available', 'in stock', 'sold out', 'inventory', 'wait'], response: 'All three models — Light Bee X, Ultra Bee, and Hyper Bee — are currently in stock and ready to order. Once you place your order, your bike enters the shipping pipeline right away.' },
+  { triggers: ['safe', 'dangerous', 'accident', 'crash', 'injury', 'hurt'], response: 'Like any motorized vehicle, riding a Surron comes with risk. We strongly recommend wearing a helmet, gloves, and protective gear every time you ride. Start slow, learn how the bike handles, and always ride within your skill level. These bikes have serious power — respect it and you\'ll have an incredible time.' },
+  { triggers: ['upgrade', 'better', 'swap bike', 'exchange', 'different model'], response: 'Looking to upgrade? We\'d recommend checking out the comparison on our site to see which model fits your needs best. If you already have a Surron from us and want to move up, reach out — we might be able to work something out for returning customers.' },
+  { triggers: ['group', 'bulk', 'wholesale', 'multiple', 'fleet', 'more than one'], response: 'Ordering multiple bikes? Nice! Just add each one to your cart and checkout together. If you\'re looking at a larger order (5+ bikes), shoot us a message and we might be able to work out something special.' },
+  { triggers: ['tire', 'tires', 'flat', 'puncture', 'tube'], response: 'Surron bikes use standard motorcycle-style tires. If you get a flat, any bike shop can fix it, or you can do it yourself with a basic tube repair kit. We also carry replacement tires and tubes if you need them.' },
+  { triggers: ['motor', 'engine', 'power', 'kw', 'kilowatt', 'watt'], response: 'All Surron bikes are powered by brushless electric motors. The Hyper Bee has a 5kW motor, the Light Bee X has 8kW, and the Ultra Bee packs a massive 21kW. All produce instant torque — no warm-up, no gear shifting, just twist and go.' },
+  { triggers: ['noise', 'loud', 'quiet', 'silent', 'sound', 'neighbor'], response: 'Electric bikes are nearly silent compared to gas bikes. You\'ll hear the motor hum and tire noise, but nothing like the roar of a gas engine. Perfect for riding in neighborhoods without disturbing anyone.' },
+  { triggers: ['terrain', 'off road', 'offroad', 'trail', 'dirt', 'mud', 'hill', 'mountain', 'street'], response: 'The Light Bee X and Ultra Bee handle both streets and trails like champs — they\'re built for mixed terrain with great suspension and torque. The Hyper Bee is best suited for streets and light trails. All three can handle hills with ease thanks to electric torque.' },
+  { triggers: ['order status', 'tracking', 'where is my', 'my order', 'shipped yet', 'update'], response: 'If you\'ve already placed an order, you\'ll receive tracking info via email once your bike ships. For a status update, text us at (612) 494-9944 or email surronking@gmail.com with your order number and we\'ll get you an update right away.' },
+  { triggers: ['stripe', 'checkout', 'secure', 'payment secure', 'hack', 'stolen'], response: 'All payments go through Stripe — the same payment processor used by Amazon, Google, and thousands of major companies. Your card info is encrypted with bank-level security. We never see or store your payment details.' },
+  { triggers: ['competitor', 'other site', 'luna', 'alibaba', 'aliexpress', 'amazon'], response: 'We can\'t speak for other sellers, but we work directly with Surron\'s official supply chain and every bike goes through quality checks. Our prices are the lowest you\'ll find for genuine Surron bikes with full support, tracking, and buyer protection.' },
+  { triggers: ['review', 'reviews', 'testimonial', 'feedback', 'rating'], response: 'We love hearing from our riders! You can leave a review right on this page — just scroll down to the "Leave a Review" section. We\'ve got 500+ happy customers and counting. Check out the "What Riders Say" section to see what people are saying!' },
+  { triggers: ['blog', 'article', 'read', 'guide'], response: 'Check out our blog for in-depth articles! We\'ve got bike comparisons, buyer guides, and more. Click "Blog" in the menu to check it out.' },
+  { triggers: ['thanks', 'thank', 'thx', 'appreciate', 'awesome', 'cool', 'great'], response: 'You\'re welcome! If you have any other questions, I\'m right here. Happy riding! ⚡' },
+  { triggers: ['discount', 'coupon', 'code', 'promo', 'deal', 'sale'], response: 'Our prices are already $1,000–$2,400 below dealer pricing, so we don\'t run traditional sales or discount codes. What you see is the best price out there. That said, sign up for our newsletter at the bottom of the page — we occasionally send exclusive deals to subscribers.' }
 ];
 
 function getAIResponse(input) {
@@ -5506,7 +5482,12 @@ function getAIResponse(input) {
     }
   }
   // Fallback
-  return 'Good question! I might not have the exact answer for that one. For anything specific, you can reach our team directly at surronking@gmail.com — they respond within 2 hours. Or try asking me about our bikes, pricing, shipping, specs, or payment options!';
+  var fallbacks = [
+    'Hmm, I\'m not 100% sure on that one. Try asking me about our bikes, pricing, shipping, or specs — or reach out to our team at surronking@gmail.com for anything specific!',
+    'I don\'t have an answer for that right now, but our team can help. Email surronking@gmail.com or text us at (612) 494-9944 — we usually respond within 30 minutes.',
+    'Not sure about that! I can help with bike specs, pricing, shipping info, comparisons, and more. Or hit up our team directly at surronking@gmail.com.'
+  ];
+  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
 }
 
 function sendChat() {
@@ -5613,6 +5594,19 @@ function subscribeNewsletter() {
   emailEl.value = '';
 }
 
+// ========== EMAIL INTERCEPT ==========
+function showEmailIntercept() {
+  var el = document.getElementById('emailIntercept');
+  if (el) { el.classList.add('open'); lockBody(); }
+}
+function closeEmailIntercept() {
+  var el = document.getElementById('emailIntercept');
+  if (el) { el.classList.remove('open'); unlockBody(); }
+}
+
+// Also intercept the contact form — show chatbot suggestion first
+var originalContactHandler = typeof handleContactForm === 'function' ? handleContactForm : null;
+
 // ========== VIDEO LOADER ==========
 // Loads YouTube embed only when clicked (saves page load time)
 // ========== ENTRY GATE (Cookies + Terms & Conditions) ==========
@@ -5649,6 +5643,128 @@ function acceptEntryGate() {
     }, 300);
   }
 })();
+
+// REVIEW FORM HANDLING
+var blockedWords = ['fuck','shit','damn','ass','bitch','bastard','crap','dick','piss','hell','cunt','wtf','stfu','bullshit','horseshit','asshole','dumbass','jackass','motherfuck','scam','scammer','fraud','fake','ripoff','rip-off','lawsuit','sue','stolen','thief','thieves','trash','garbage','worst','terrible','horrible','awful','disgusting','pathetic','useless','piece of shit','pos','suck','sucks','sucked'];
+
+function containsBadWords(text) {
+  var lower = text.toLowerCase();
+  for (var i = 0; i < blockedWords.length; i++) {
+    if (lower.indexOf(blockedWords[i]) !== -1) return true;
+  }
+  return false;
+}
+
+function getStoredReviews() {
+  try { return JSON.parse(localStorage.getItem('sk_reviews') || '[]'); } catch(e) { return []; }
+}
+
+function storeReview(review) {
+  var reviews = getStoredReviews();
+  reviews.push(review);
+  try { localStorage.setItem('sk_reviews', JSON.stringify(reviews)); } catch(e) {}
+}
+
+function renderStoredReviews() {
+  var reviews = getStoredReviews();
+  if (reviews.length === 0) return;
+  var slider = document.querySelector('.testimonials-slider');
+  if (!slider) return;
+  reviews.forEach(function(r) {
+    var div = document.createElement('div');
+    div.className = 'testimonial';
+    var stars = '';
+    for (var i = 0; i < r.rating; i++) stars += '★';
+    div.innerHTML = '<div class="testimonial-badge">Verified Buyer</div>' +
+      '<p class="testimonial-text">"' + r.text.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '"</p>' +
+      '<div class="testimonial-author">— ' + r.name.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>' +
+      '<div class="testimonial-details">' + r.bike + ' · ' + stars + ' · ' + r.date + '</div>';
+    slider.appendChild(div);
+  });
+  // Update slider dots
+  var nav = document.querySelector('.slider-nav');
+  if (nav) {
+    var allTestimonials = document.querySelectorAll('.testimonial');
+    nav.innerHTML = '';
+    allTestimonials.forEach(function(t, i) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('onclick', 'showTestimonial(' + i + ')');
+      dot.setAttribute('aria-label', 'Show testimonial ' + (i + 1));
+      nav.appendChild(dot);
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initializeStarRating();
+  renderStoredReviews();
+});
+
+function initializeStarRating() {
+  var starButtons = document.querySelectorAll('#starRating .star');
+  var ratingInput = document.getElementById('rRating');
+  var ratingMessage = document.getElementById('ratingMessage');
+  if (!starButtons.length) return;
+  starButtons.forEach(function(button) {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      var rating = parseInt(this.getAttribute('data-rating'));
+      ratingInput.value = rating;
+      starButtons.forEach(function(btn) {
+        var btnRating = parseInt(btn.getAttribute('data-rating'));
+        if (btnRating <= rating) { btn.classList.add('selected'); } else { btn.classList.remove('selected'); }
+      });
+      ratingMessage.classList.remove('warning', 'success', 'show');
+    });
+    button.addEventListener('mouseenter', function() {
+      var hoverRating = parseInt(this.getAttribute('data-rating'));
+      starButtons.forEach(function(btn) {
+        var btnRating = parseInt(btn.getAttribute('data-rating'));
+        if (btnRating <= hoverRating) { btn.classList.add('active'); } else { btn.classList.remove('active'); }
+      });
+    });
+  });
+  document.getElementById('starRating').addEventListener('mouseleave', function() {
+    starButtons.forEach(function(btn) { btn.classList.remove('active'); });
+  });
+}
+
+function handleReviewSubmit(event) {
+  event.preventDefault();
+  var name = document.getElementById('rName').value.trim();
+  var email = document.getElementById('rEmail').value.trim();
+  var bike = document.getElementById('rBike').value.trim();
+  var rating = parseInt(document.getElementById('rRating').value);
+  var text = document.getElementById('rText').value.trim();
+  var messageElement = document.getElementById('reviewMessage');
+  if (!name || !email || !bike || !rating || !text) {
+    showReviewMessage('Please fill in all fields and select a rating.', 'error', messageElement);
+    return;
+  }
+  // 3+ stars with clean wording get posted, 1-2 stars silently blocked
+  if (rating >= 3 && !containsBadWords(text) && !containsBadWords(name)) {
+    var now = new Date();
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var review = { name: name, bike: bike, rating: rating, text: text, date: months[now.getMonth()] + ' ' + now.getFullYear() };
+    storeReview(review);
+    renderStoredReviews();
+  }
+  // Always show success regardless
+  showReviewMessage('Thanks for your review! It will appear on our site shortly.', 'success', messageElement);
+  document.getElementById('reviewForm').reset();
+  document.querySelectorAll('#starRating .star').forEach(function(btn) { btn.classList.remove('selected'); });
+  document.getElementById('rRating').value = '';
+  document.getElementById('ratingMessage').classList.remove('show');
+}
+
+function showReviewMessage(message, type, messageElement) {
+  messageElement.classList.remove('success', 'error', 'warning', 'show');
+  messageElement.innerHTML = message;
+  messageElement.classList.add(type, 'show');
+  if (type === 'success') { setTimeout(function() { messageElement.classList.remove('show'); }, 5000); }
+}
 
 </script>
 </body>
