@@ -4183,16 +4183,24 @@ textarea:focus-visible,
     startMusic();
   }
 
-  var events = ['click', 'touchstart', 'touchend', 'keydown', 'pointerdown', 'mousedown'];
+  var events = ['click', 'touchstart', 'touchend', 'keydown', 'pointerdown', 'pointerup',
+    'mousedown', 'mouseup', 'mousemove', 'wheel', 'scroll', 'contextmenu', 'dblclick',
+    'focus', 'focusin', 'auxclick'];
   function addListeners() {
     events.forEach(function(evt) {
       document.addEventListener(evt, onInteract, { capture: true, passive: true, once: false });
     });
+    window.addEventListener('scroll', onInteract, { passive: true });
+    window.addEventListener('wheel', onInteract, { passive: true });
+    window.addEventListener('mousemove', onInteract, { passive: true });
   }
   function removeListeners() {
     events.forEach(function(evt) {
       document.removeEventListener(evt, onInteract, true);
     });
+    window.removeEventListener('scroll', onInteract);
+    window.removeEventListener('wheel', onInteract);
+    window.removeEventListener('mousemove', onInteract);
   }
   addListeners();
 
