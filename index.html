@@ -4180,6 +4180,9 @@ textarea:focus-visible,
 
   function onInteract(e) {
     if (started) return;
+    /* Don't start music while entry gate is visible — wait for "Enter Site" button */
+    var gate = document.getElementById('entryGate');
+    if (gate && gate.style.display !== 'none' && !gate.classList.contains('hiding')) return;
     startMusic();
   }
 
