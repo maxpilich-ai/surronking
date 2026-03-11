@@ -4146,66 +4146,20 @@ textarea:focus-visible,
 (function() {
   var audio = document.getElementById('bgMusic');
   var started = false;
-  var musicAllowed = false;
-
   if (!audio) return;
 
-  audio.addEventListener('error', function(e) {
-    var code = audio.error ? audio.error.code : '?';
-    var msg = audio.error ? audio.error.message : 'unknown';
-    console.error('BG MUSIC LOAD ERROR code=' + code + ' msg=' + msg);
-  });
-
-  function startMusic() {
+  window.startBgMusic = function() {
     if (started) return;
     audio.volume = 0.3;
     audio.currentTime = 0;
     var p = audio.play();
     if (p && typeof p.then === 'function') {
-      p.then(function() {
-        started = true;
-        removeListeners();
-      }).catch(function(err) {
-        started = false;
-      });
+      p.then(function() { started = true; }).catch(function() { started = false; });
     }
-  }
-
-  function onInteract(e) {
-    if (started || !musicAllowed) return;
-    startMusic();
-  }
-
-  var events = ['click', 'touchstart', 'touchend', 'keydown', 'pointerdown', 'pointerup',
-    'mousedown', 'mouseup', 'mousemove', 'wheel', 'scroll', 'contextmenu', 'dblclick',
-    'focus', 'focusin', 'auxclick'];
-  function addListeners() {
-    events.forEach(function(evt) {
-      document.addEventListener(evt, onInteract, { capture: true, passive: true, once: false });
-    });
-    window.addEventListener('scroll', onInteract, { passive: true });
-    window.addEventListener('wheel', onInteract, { passive: true });
-    window.addEventListener('mousemove', onInteract, { passive: true });
-  }
-  function removeListeners() {
-    events.forEach(function(evt) {
-      document.removeEventListener(evt, onInteract, true);
-    });
-    window.removeEventListener('scroll', onInteract);
-    window.removeEventListener('wheel', onInteract);
-    window.removeEventListener('mousemove', onInteract);
-  }
-  addListeners();
-
-  /* Called directly from the entry gate button — guaranteed user gesture */
-  window.startBgMusic = function() {
-    musicAllowed = true;
-    startMusic();
   };
 
   window.toggleMusic = function() {
-    musicAllowed = true;
-    if (!started) { startMusic(); return; }
+    if (!started) { window.startBgMusic(); return; }
     if (audio.paused) { audio.play().catch(function(){}); }
     else { audio.pause(); }
   };
