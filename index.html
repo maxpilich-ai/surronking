@@ -4141,7 +4141,7 @@ textarea:focus-visible,
 <!-- MUSIC VISUALIZER -->
 <canvas class="visualizer-canvas" id="vizCanvas"></canvas>
 <!-- SoundCloud Hidden Player — On My Own by Kyle The Hooligan -->
-<iframe id="scPlayer" style="display:none" width="0" height="0" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/693522558&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
+<iframe id="scPlayer" style="display:none" width="0" height="0" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/hooligans/on-my-own-prod-by-bamob&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
 <script src="https://w.soundcloud.com/player/api.js"></script>
 
 <!-- LIGHTNING CANVAS -->
@@ -5312,31 +5312,51 @@ let scReady = false;
 let vizAnimFrame = null;
 
 // Initialize SoundCloud widget once API loads
+let scInitAttempts = 0;
 function initSCWidget() {
   const iframe = document.getElementById('scPlayer');
-  if (!iframe || typeof SC === 'undefined') return;
-  scWidget = SC.Widget(iframe);
-  scWidget.bind(SC.Widget.Events.READY, function() {
-    scReady = true;
-    scWidget.setVolume(30); // Background level volume
-    // Loop the track
-    scWidget.bind(SC.Widget.Events.FINISH, function() {
-      scWidget.seekTo(0);
-      scWidget.play();
+  if (!iframe) return;
+  // Wait for SC API to load
+  if (typeof SC === 'undefined') {
+    if (scInitAttempts < 20) { scInitAttempts++; setTimeout(initSCWidget, 500); }
+    return;
+  }
+  try {
+    scWidget = SC.Widget(iframe);
+    scWidget.bind(SC.Widget.Events.READY, function() {
+      scReady = true;
+      scWidget.setVolume(30);
+      scWidget.bind(SC.Widget.Events.FINISH, function() {
+        scWidget.seekTo(0);
+        scWidget.play();
+      });
     });
-  });
+    // Also listen for play state to confirm it's working
+    scWidget.bind(SC.Widget.Events.PLAY, function() {
+      musicPlaying = true;
+      var canvas = document.getElementById('vizCanvas');
+      if (canvas) canvas.classList.add('active');
+    });
+    scWidget.bind(SC.Widget.Events.PAUSE, function() {
+      musicPlaying = false;
+      var canvas = document.getElementById('vizCanvas');
+      if (canvas) canvas.classList.remove('active');
+    });
+  } catch(e) {
+    if (scInitAttempts < 20) { scInitAttempts++; setTimeout(initSCWidget, 500); }
+  }
 }
-// Try to init immediately and also on window load
-if (document.readyState === 'complete') { setTimeout(initSCWidget, 500); }
-else { window.addEventListener('load', function() { setTimeout(initSCWidget, 500); }); }
+// Try init on load with retries
+window.addEventListener('load', function() { setTimeout(initSCWidget, 800); });
+setTimeout(initSCWidget, 1500);
+setTimeout(initSCWidget, 3000);
 
 function toggleMusic() {
   const canvas = document.getElementById('vizCanvas');
 
   if (!scReady) {
-    // Try init again if not ready
     initSCWidget();
-    setTimeout(toggleMusic, 300);
+    setTimeout(toggleMusic, 500);
     return;
   }
 
