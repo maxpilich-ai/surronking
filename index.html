@@ -4140,9 +4140,8 @@ textarea:focus-visible,
 
 <!-- MUSIC VISUALIZER -->
 <canvas class="visualizer-canvas" id="vizCanvas"></canvas>
-<!-- SoundCloud Hidden Player — On My Own by Kyle The Hooligan -->
-<iframe id="scPlayer" allow="autoplay" style="position:absolute;left:-9999px;top:-9999px;width:300px;height:150px;pointer-events:none;" src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fhooligans%2Fon-my-own-prod-by-bamob&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false&single_active=false"></iframe>
-<script src="https://w.soundcloud.com/player/api.js"></script>
+<!-- Background Music — On My Own by Kyle The Hooligan -->
+<audio id="bgMusic" src="on-my-own.mp3" preload="auto" loop></audio>
 
 <!-- LIGHTNING CANVAS -->
 <canvas class="lightning-canvas" id="lightningCanvas"></canvas>
@@ -5306,74 +5305,60 @@ document.querySelectorAll('.btn-buy').forEach(btn => {
   });
 });
 
-// ========== SOUNDCLOUD MUSIC PLAYER — On My Own by Kyle The Hooligan ==========
-let scWidget = null;
-let scReady = false;
+// ========== MUSIC PLAYER — On My Own by Kyle The Hooligan ==========
+let audioEl = null;
+let audioCtxMusic = null;
+let analyser = null;
 let vizAnimFrame = null;
+let audioSourceConnected = false;
 
-// Initialize SoundCloud widget once API loads
-let scInitAttempts = 0;
-function initSCWidget() {
-  const iframe = document.getElementById('scPlayer');
-  if (!iframe) return;
-  // Wait for SC API to load
-  if (typeof SC === 'undefined') {
-    if (scInitAttempts < 20) { scInitAttempts++; setTimeout(initSCWidget, 500); }
-    return;
-  }
+function initAudio() {
+  audioEl = document.getElementById('bgMusic');
+  if (!audioEl) return;
+  audioEl.volume = 0.3;
+}
+initAudio();
+
+function connectAnalyser() {
+  if (audioSourceConnected || !audioEl) return;
   try {
-    scWidget = SC.Widget(iframe);
-    scWidget.bind(SC.Widget.Events.READY, function() {
-      scReady = true;
-      scWidget.setVolume(30);
-      scWidget.bind(SC.Widget.Events.FINISH, function() {
-        scWidget.seekTo(0);
-        scWidget.play();
-      });
-    });
-    // Also listen for play state to confirm it's working
-    scWidget.bind(SC.Widget.Events.PLAY, function() {
-      musicPlaying = true;
-      var canvas = document.getElementById('vizCanvas');
-      if (canvas) canvas.classList.add('active');
-    });
-    scWidget.bind(SC.Widget.Events.PAUSE, function() {
-      musicPlaying = false;
-      var canvas = document.getElementById('vizCanvas');
-      if (canvas) canvas.classList.remove('active');
-    });
+    audioCtxMusic = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtxMusic.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.85;
+    const source = audioCtxMusic.createMediaElementSource(audioEl);
+    source.connect(analyser);
+    analyser.connect(audioCtxMusic.destination);
+    audioSourceConnected = true;
   } catch(e) {
-    if (scInitAttempts < 20) { scInitAttempts++; setTimeout(initSCWidget, 500); }
+    // Fallback: music still plays, visualizer just won't have real data
   }
 }
-// Try init on load with retries
-window.addEventListener('load', function() { setTimeout(initSCWidget, 800); });
-setTimeout(initSCWidget, 1500);
-setTimeout(initSCWidget, 3000);
 
 function toggleMusic() {
   const canvas = document.getElementById('vizCanvas');
-
-  if (!scReady) {
-    initSCWidget();
-    setTimeout(toggleMusic, 500);
-    return;
-  }
+  if (!audioEl) { audioEl = document.getElementById('bgMusic'); }
+  if (!audioEl) return;
 
   if (!musicPlaying) {
-    scWidget.play();
-    if (canvas) canvas.classList.add('active');
-    musicPlaying = true;
-    drawVisualizer();
+    // Connect analyser on first play (needs user gesture)
+    if (!audioSourceConnected) connectAnalyser();
+    if (audioCtxMusic && audioCtxMusic.state === 'suspended') audioCtxMusic.resume();
+    audioEl.play().then(function() {
+      musicPlaying = true;
+      if (canvas) canvas.classList.add('active');
+      drawVisualizer();
+    }).catch(function(e) {
+      // Autoplay blocked — will work on next user interaction
+    });
   } else {
-    scWidget.pause();
+    audioEl.pause();
     if (canvas) canvas.classList.remove('active');
     musicPlaying = false;
     if (vizAnimFrame) cancelAnimationFrame(vizAnimFrame);
   }
 }
 
-// Animated visualizer (simulated since we can't get audio data from iframe)
 function drawVisualizer() {
   const canvas = document.getElementById('vizCanvas');
   if (!canvas) return;
@@ -5382,32 +5367,29 @@ function drawVisualizer() {
   canvas.width = window.innerWidth;
   canvas.height = 60;
 
-  const barCount = 64;
-  const barWidth = (canvas.width / barCount);
-  let phase = 0;
+  const bufferLength = analyser ? analyser.frequencyBinCount : 64;
+  const dataArray = new Uint8Array(bufferLength);
 
   function draw() {
     if (!musicPlaying) return;
     vizAnimFrame = requestAnimationFrame(draw);
+    if (analyser) analyser.getByteFrequencyData(dataArray);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    phase += 0.04;
 
-    for (let i = 0; i < barCount; i++) {
-      // Create organic-looking motion using multiple sine waves
-      const h1 = Math.sin(phase + i * 0.15) * 0.3;
-      const h2 = Math.sin(phase * 1.3 + i * 0.08) * 0.25;
-      const h3 = Math.sin(phase * 0.7 + i * 0.22) * 0.2;
-      const h4 = Math.cos(phase * 0.5 + i * 0.12) * 0.15;
-      const barHeight = Math.abs(h1 + h2 + h3 + h4) * canvas.height * 1.1 + 3;
-      const hue = 270 + (i / barCount) * 100;
+    const barWidth = (canvas.width / bufferLength) * 2.5;
+    let x = 0;
+    for (let i = 0; i < bufferLength; i++) {
+      const barHeight = (dataArray[i] / 255) * canvas.height;
+      const hue = 270 + (i / bufferLength) * 100;
       ctx.fillStyle = 'hsla(' + hue + ', 80%, 55%, 0.6)';
       ctx.beginPath();
       if (ctx.roundRect) {
-        ctx.roundRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight, 2);
+        ctx.roundRect(x, canvas.height - barHeight, barWidth - 1, barHeight, 2);
       } else {
-        ctx.rect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+        ctx.rect(x, canvas.height - barHeight, barWidth - 1, barHeight);
       }
       ctx.fill();
+      x += barWidth;
     }
   }
   draw();
