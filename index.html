@@ -4146,12 +4146,10 @@ textarea:focus-visible,
 (function() {
   var audio = document.getElementById('bgMusic');
   var started = false;
-  var loaded = false;
-  var retries = 0;
+  var musicAllowed = false;
 
   if (!audio) return;
 
-  audio.addEventListener('canplaythrough', function() { loaded = true; });
   audio.addEventListener('error', function(e) {
     var code = audio.error ? audio.error.code : '?';
     var msg = audio.error ? audio.error.message : 'unknown';
@@ -4166,23 +4164,15 @@ textarea:focus-visible,
     if (p && typeof p.then === 'function') {
       p.then(function() {
         started = true;
-        console.log('BG MUSIC: playing successfully');
         removeListeners();
       }).catch(function(err) {
-        console.warn('BG MUSIC play() rejected: ' + err.name + ' ' + err.message);
-        retries++;
-        if (retries < 5) {
-          started = false;
-        }
+        started = false;
       });
     }
   }
 
   function onInteract(e) {
-    if (started) return;
-    /* Don't start music while entry gate is visible — wait for "Enter Site" button */
-    var gate = document.getElementById('entryGate');
-    if (gate && gate.style.display !== 'none' && !gate.classList.contains('hiding')) return;
+    if (started || !musicAllowed) return;
     startMusic();
   }
 
@@ -4208,9 +4198,13 @@ textarea:focus-visible,
   addListeners();
 
   /* Called directly from the entry gate button — guaranteed user gesture */
-  window.startBgMusic = startMusic;
+  window.startBgMusic = function() {
+    musicAllowed = true;
+    startMusic();
+  };
 
   window.toggleMusic = function() {
+    musicAllowed = true;
     if (!started) { startMusic(); return; }
     if (audio.paused) { audio.play().catch(function(){}); }
     else { audio.pause(); }
