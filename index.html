@@ -4273,29 +4273,8 @@ setTimeout(() => {
   if (pl) pl.classList.add('hidden');
 }, 4000);
 
-// Music starts muted via autoplay, unmute on ANY interaction (scroll, click, anything)
-let musicAutoStarted = false;
-let musicPlaying = false;
-var musicEvents = ['click','touchstart','mousedown','keydown','pointerdown','scroll','wheel','mousemove'];
-function startMusicOnce() {
-  if (musicAutoStarted) return;
-  musicAutoStarted = true;
-  musicEvents.forEach(function(evt) { document.removeEventListener(evt, startMusicOnce, true); });
-  var audio = document.getElementById('bgMusic');
-  if (audio) {
-    // Reset to beginning, unmute, and play
-    audio.currentTime = 0;
-    audio.muted = false;
-    audio.volume = 0.3;
-    musicPlaying = true;
-    // Connect analyser and start visualizer
-    if (typeof connectAnalyser === 'function') connectAnalyser();
-    if (typeof drawVisualizer === 'function') drawVisualizer();
-    var canvas = document.getElementById('vizCanvas');
-    if (canvas) canvas.classList.add('active');
-  }
-}
-musicEvents.forEach(function(evt) { document.addEventListener(evt, startMusicOnce, true); });
+// ========== MUSIC SYSTEM (REMOVED - NOW HANDLED IN UNIFIED MUSIC PLAYER BELOW) ==========
+// The unified music system is defined later in the code
 
 // ========== IMAGE UPLOAD SYSTEM (PER-COLOR) ==========
 // Color map for each bike
@@ -5305,22 +5284,30 @@ document.querySelectorAll('.btn-buy').forEach(btn => {
   });
 });
 
-// ========== MUSIC PLAYER — On My Own by Kyle The Hooligan ==========
+// ========== UNIFIED MUSIC PLAYER SYSTEM — On My Own by Kyle The Hooligan ==========
+// Global state
 let audioEl = null;
 let audioCtxMusic = null;
 let analyser = null;
 let vizAnimFrame = null;
 let audioSourceConnected = false;
+let musicUnmuted = false; // Track whether we've already unm​uted and started the music
 
+/**
+ * Initialize the audio element reference
+ * Called at page load
+ */
 function initAudio() {
   audioEl = document.getElementById('bgMusic');
   if (!audioEl) return;
-  // Start muted autoplay — browser allows this
-  audioEl.muted = true;
-  audioEl.play().catch(function() {});
+  // Audio element already has autoplay muted in HTML
+  // We don't call play() here - browser autoplay with muted=true handles it
 }
-initAudio();
 
+/**
+ * Connect the Web Audio API analyser to the audio element
+ * Called once when user first interacts
+ */
 function connectAnalyser() {
   if (audioSourceConnected || !audioEl) return;
   try {
@@ -5335,28 +5322,67 @@ function connectAnalyser() {
   } catch(e) {}
 }
 
-function toggleMusic() {
+/**
+ * Start music on first user interaction (scroll, click, tap, etc)
+ * This unmutes the audio, resets to beginning, and starts the visualizer
+ * Only happens ONCE - subsequent calls to toggleMusic() just pause/play
+ */
+function unmuteAndStartMusic() {
+  if (musicUnmuted || !audioEl) return;
+  musicUnmuted = true;
+
+  // Reset to beginning, unmute, and set volume
+  audioEl.currentTime = 0;
+  audioEl.muted = false;
+  audioEl.volume = 0.3;
+
+  // Connect analyser for visualizer (one-time setup)
+  connectAnalyser();
+
+  // Resume AudioContext if needed (for Web Audio API)
+  if (audioCtxMusic && audioCtxMusic.state === 'suspended') {
+    audioCtxMusic.resume().catch(function() {});
+  }
+
+  // Start the visualizer
+  drawVisualizer();
+
+  // Add active class to canvas
   var canvas = document.getElementById('vizCanvas');
+  if (canvas) canvas.classList.add('active');
+}
+
+/**
+ * Toggle music pause/play
+ * User calls this to pause/play after music has been unm​uted
+ */
+function toggleMusic() {
   if (!audioEl) { audioEl = document.getElementById('bgMusic'); }
   if (!audioEl) return;
 
-  if (!musicPlaying) {
-    audioEl.muted = false;
-    audioEl.volume = 0.3;
-    if (!audioSourceConnected) connectAnalyser();
-    if (audioCtxMusic && audioCtxMusic.state === 'suspended') audioCtxMusic.resume();
+  // If music hasn't been unm​uted yet, unmute it first
+  if (!musicUnmuted) {
+    unmuteAndStartMusic();
+    return;
+  }
+
+  // Otherwise, toggle pause/play
+  var canvas = document.getElementById('vizCanvas');
+  if (audioEl.paused) {
     audioEl.play().catch(function() {});
-    musicPlaying = true;
     if (canvas) canvas.classList.add('active');
     drawVisualizer();
   } else {
     audioEl.pause();
     if (canvas) canvas.classList.remove('active');
-    musicPlaying = false;
     if (vizAnimFrame) cancelAnimationFrame(vizAnimFrame);
   }
 }
 
+/**
+ * Draw the visualizer bars synchronized to audio frequency data
+ * Called continuously while music is playing
+ */
 function drawVisualizer() {
   const canvas = document.getElementById('vizCanvas');
   if (!canvas) return;
@@ -5369,7 +5395,12 @@ function drawVisualizer() {
   const dataArray = new Uint8Array(bufferLength);
 
   function draw() {
-    if (!musicPlaying) return;
+    // Stop drawing if audio is paused
+    if (audioEl && audioEl.paused) {
+      if (vizAnimFrame) cancelAnimationFrame(vizAnimFrame);
+      return;
+    }
+
     vizAnimFrame = requestAnimationFrame(draw);
     if (analyser) analyser.getByteFrequencyData(dataArray);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -5392,6 +5423,33 @@ function drawVisualizer() {
   }
   draw();
 }
+
+/**
+ * Initialize audio on page load
+ */
+initAudio();
+
+/**
+ * Unmute and start music on ANY user interaction
+ * Listens for: click, scroll, wheel, keydown, touchstart, mousedown, pointerdown, mousemove
+ * Only triggers ONCE - subsequent interactions are ignored
+ */
+var musicInteractionEvents = ['click', 'scroll', 'wheel', 'keydown', 'touchstart', 'mousedown', 'pointerdown', 'mousemove'];
+function onUserInteract() {
+  if (!musicUnmuted) {
+    unmuteAndStartMusic();
+    // Remove all event listeners since we only need this to happen once
+    musicInteractionEvents.forEach(function(evt) {
+      document.removeEventListener(evt, onUserInteract, true);
+      window.removeEventListener(evt, onUserInteract, true);
+    });
+  }
+}
+// Attach listeners with capture phase to catch events early
+musicInteractionEvents.forEach(function(evt) {
+  document.addEventListener(evt, onUserInteract, true);
+  window.addEventListener(evt, onUserInteract, true);
+});
 
 window.addEventListener('resize', () => {
   const vc = document.getElementById('vizCanvas');
