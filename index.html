@@ -4244,14 +4244,6 @@ textarea:focus-visible,
   </div>
 </div>
 
-<!-- RETURNING VISITOR QUICK-ENTER SPLASH (starts music on tap) -->
-<div class="entry-gate-overlay" id="returnSplash" style="display:none; cursor:pointer;" onclick="dismissSplash()">
-  <div class="entry-gate" style="text-align:center; padding:2.5rem 2rem;">
-    <h2 style="margin-bottom:0.6rem;">⚡ Welcome Back</h2>
-    <button type="button" class="entry-gate-btn active" onclick="dismissSplash()" style="margin-top:1rem; min-width:160px;">Enter Site</button>
-  </div>
-</div>
-
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- AI CHATBOT -->
@@ -5597,39 +5589,13 @@ function acceptEntryGate() {
   /* Start background music directly from this user gesture (Safari requires it) */
   if (typeof window.startBgMusic === 'function') { window.startBgMusic(); }
 }
-function dismissSplash() {
-  var splash = document.getElementById('returnSplash');
-  if (splash) {
-    splash.classList.add('hiding');
-    splash.classList.remove('show');
-    setTimeout(function() { splash.style.display = 'none'; }, 400);
-  }
-  document.body.style.overflow = '';
-  /* Start background music directly from this user gesture (Safari requires it) */
-  if (typeof window.startBgMusic === 'function') { window.startBgMusic(); }
-}
-// Show entry gate — always require at least one click so music can start (Safari policy)
+// Always show entry gate — every visit requires one click so music can start (Safari policy)
 (function() {
-  var cookies = null; var terms = null;
-  try { cookies = localStorage.getItem('surron_cookies'); } catch(e) {}
-  try { terms = localStorage.getItem('surron_terms'); } catch(e) {}
-  if (cookies === 'accepted' && terms === 'accepted') {
-    /* Returning visitor — show quick-enter splash instead of full gate */
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() {
     var gate = document.getElementById('entryGate');
-    if (gate) gate.style.display = 'none';
-    var splash = document.getElementById('returnSplash');
-    if (splash) {
-      splash.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-      setTimeout(function() { splash.classList.add('show'); }, 50);
-    }
-  } else {
-    document.body.style.overflow = 'hidden';
-    setTimeout(function() {
-      var gate = document.getElementById('entryGate');
-      if (gate) gate.classList.add('show');
-    }, 300);
-  }
+    if (gate) gate.classList.add('show');
+  }, 300);
 })();
 
 // REVIEW FORM HANDLING
