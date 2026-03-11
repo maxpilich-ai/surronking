@@ -4141,7 +4141,7 @@ textarea:focus-visible,
 <!-- MUSIC VISUALIZER -->
 <canvas class="visualizer-canvas" id="vizCanvas"></canvas>
 <!-- Background Music — On My Own by Kyle The Hooligan -->
-<audio id="bgMusic" src="on-my-own.mp3" preload="auto" loop></audio>
+<audio id="bgMusic" src="on-my-own.mp3" preload="auto" loop autoplay muted></audio>
 
 <!-- LIGHTNING CANVAS -->
 <canvas class="lightning-canvas" id="lightningCanvas"></canvas>
@@ -4273,26 +4273,29 @@ setTimeout(() => {
   if (pl) pl.classList.add('hidden');
 }, 4000);
 
-// Auto-play music on first user gesture
+// Music starts muted via autoplay, unmute on ANY interaction (scroll, click, anything)
 let musicAutoStarted = false;
 let musicPlaying = false;
+var musicEvents = ['click','touchstart','mousedown','keydown','pointerdown','scroll','wheel','mousemove'];
 function startMusicOnce() {
   if (musicAutoStarted) return;
   musicAutoStarted = true;
-  // Remove all listeners immediately
-  ['click','touchstart','mousedown','keydown','pointerdown'].forEach(function(evt) {
-    document.removeEventListener(evt, startMusicOnce, true);
-  });
-  // Small delay to ensure gesture context is valid
-  setTimeout(function() {
-    if (!musicPlaying && typeof toggleMusic === 'function') {
-      toggleMusic();
-    }
-  }, 100);
+  musicEvents.forEach(function(evt) { document.removeEventListener(evt, startMusicOnce, true); });
+  var audio = document.getElementById('bgMusic');
+  if (audio) {
+    // Reset to beginning, unmute, and play
+    audio.currentTime = 0;
+    audio.muted = false;
+    audio.volume = 0.3;
+    musicPlaying = true;
+    // Connect analyser and start visualizer
+    if (typeof connectAnalyser === 'function') connectAnalyser();
+    if (typeof drawVisualizer === 'function') drawVisualizer();
+    var canvas = document.getElementById('vizCanvas');
+    if (canvas) canvas.classList.add('active');
+  }
 }
-['click','touchstart','mousedown','keydown','pointerdown'].forEach(function(evt) {
-  document.addEventListener(evt, startMusicOnce, true);
-});
+musicEvents.forEach(function(evt) { document.addEventListener(evt, startMusicOnce, true); });
 
 // ========== IMAGE UPLOAD SYSTEM (PER-COLOR) ==========
 // Color map for each bike
@@ -5312,7 +5315,9 @@ let audioSourceConnected = false;
 function initAudio() {
   audioEl = document.getElementById('bgMusic');
   if (!audioEl) return;
-  audioEl.volume = 0.3;
+  // Start muted autoplay — browser allows this
+  audioEl.muted = true;
+  audioEl.play().catch(function() {});
 }
 initAudio();
 
@@ -5323,35 +5328,27 @@ function connectAnalyser() {
     analyser = audioCtxMusic.createAnalyser();
     analyser.fftSize = 256;
     analyser.smoothingTimeConstant = 0.85;
-    const source = audioCtxMusic.createMediaElementSource(audioEl);
+    var source = audioCtxMusic.createMediaElementSource(audioEl);
     source.connect(analyser);
     analyser.connect(audioCtxMusic.destination);
     audioSourceConnected = true;
-  } catch(e) {
-    // Fallback: music still plays, visualizer just won't have real data
-  }
+  } catch(e) {}
 }
 
 function toggleMusic() {
-  const canvas = document.getElementById('vizCanvas');
+  var canvas = document.getElementById('vizCanvas');
   if (!audioEl) { audioEl = document.getElementById('bgMusic'); }
   if (!audioEl) return;
 
   if (!musicPlaying) {
-    // Connect analyser on first play (needs user gesture)
+    audioEl.muted = false;
+    audioEl.volume = 0.3;
     if (!audioSourceConnected) connectAnalyser();
     if (audioCtxMusic && audioCtxMusic.state === 'suspended') audioCtxMusic.resume();
-    audioEl.play().then(function() {
-      musicPlaying = true;
-      if (canvas) canvas.classList.add('active');
-      drawVisualizer();
-    }).catch(function(e) {
-      // Autoplay blocked — reset so next interaction tries again
-      musicAutoStarted = false;
-      ['click','touchstart','mousedown','keydown','pointerdown'].forEach(function(evt) {
-        document.addEventListener(evt, startMusicOnce, true);
-      });
-    });
+    audioEl.play().catch(function() {});
+    musicPlaying = true;
+    if (canvas) canvas.classList.add('active');
+    drawVisualizer();
   } else {
     audioEl.pause();
     if (canvas) canvas.classList.remove('active');
