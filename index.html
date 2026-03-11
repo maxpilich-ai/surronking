@@ -4274,26 +4274,23 @@ setTimeout(() => {
 }, 4000);
 
 // Auto-play music as soon as possible
-// Browsers require at least one user gesture before audio can play.
-// We hook into EVERY possible interaction so it starts on the very first thing the user does.
+// Browsers only unlock audio on real user gestures: click, tap, keypress
 let musicAutoStarted = false;
 let musicPlaying = false;
+const musicTriggers = ['click','touchstart','touchend','mousedown','keydown','pointerdown','pointerup'];
 function autoStartMusic() {
   if (musicAutoStarted) return;
   musicAutoStarted = true;
-  // Small delay to let the interaction complete, then start music
-  setTimeout(() => {
-    if (!musicPlaying && typeof toggleMusic === 'function') {
-      toggleMusic();
-    }
-  }, 50);
+  if (!musicPlaying && typeof toggleMusic === 'function') {
+    toggleMusic();
+  }
   // Clean up all listeners
-  ['click','touchstart','touchend','mousedown','scroll','keydown','pointerdown'].forEach(evt => {
+  musicTriggers.forEach(evt => {
     document.removeEventListener(evt, autoStartMusic, true);
   });
 }
 // Use capture phase (true) so we catch events BEFORE anything else can stop them
-['click','touchstart','touchend','mousedown','scroll','keydown','pointerdown'].forEach(evt => {
+musicTriggers.forEach(evt => {
   document.addEventListener(evt, autoStartMusic, true);
 });
 
