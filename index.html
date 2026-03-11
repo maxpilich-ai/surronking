@@ -4141,32 +4141,68 @@ textarea:focus-visible,
 <!-- MUSIC VISUALIZER -->
 <canvas class="visualizer-canvas" id="vizCanvas"></canvas>
 <!-- Background Music — On My Own by Kyle The Hooligan -->
+<audio id="bgMusic" src="on-my-own.mp3" preload="auto" loop playsinline></audio>
 <script>
 (function() {
-  var song = new Audio('on-my-own.mp3');
-  song.loop = true;
-  song.volume = 0.3;
-  song.preload = 'auto';
-  var playing = false;
+  var audio = document.getElementById('bgMusic');
+  var started = false;
+  var loaded = false;
+  var retries = 0;
 
-  function play() {
-    if (playing) return;
-    song.play().then(function() {
-      playing = true;
-      document.removeEventListener('click', play, true);
-      document.removeEventListener('touchstart', play, true);
-      document.removeEventListener('keydown', play, true);
-    }).catch(function() {});
+  if (!audio) return;
+
+  audio.addEventListener('canplaythrough', function() { loaded = true; });
+  audio.addEventListener('error', function(e) {
+    var code = audio.error ? audio.error.code : '?';
+    var msg = audio.error ? audio.error.message : 'unknown';
+    console.error('BG MUSIC LOAD ERROR code=' + code + ' msg=' + msg);
+  });
+
+  function startMusic() {
+    if (started) return;
+    audio.volume = 0.3;
+    audio.currentTime = 0;
+    var p = audio.play();
+    if (p && typeof p.then === 'function') {
+      p.then(function() {
+        started = true;
+        console.log('BG MUSIC: playing successfully');
+        removeListeners();
+      }).catch(function(err) {
+        console.warn('BG MUSIC play() rejected: ' + err.name + ' ' + err.message);
+        retries++;
+        if (retries < 5) {
+          started = false;
+        }
+      });
+    }
   }
 
-  document.addEventListener('click', play, true);
-  document.addEventListener('touchstart', play, true);
-  document.addEventListener('keydown', play, true);
+  function onInteract(e) {
+    if (started) return;
+    startMusic();
+  }
+
+  var events = ['click', 'touchstart', 'touchend', 'keydown', 'pointerdown', 'mousedown'];
+  function addListeners() {
+    events.forEach(function(evt) {
+      document.addEventListener(evt, onInteract, { capture: true, passive: true, once: false });
+    });
+  }
+  function removeListeners() {
+    events.forEach(function(evt) {
+      document.removeEventListener(evt, onInteract, true);
+    });
+  }
+  addListeners();
+
+  /* Called directly from the entry gate button — guaranteed user gesture */
+  window.startBgMusic = startMusic;
 
   window.toggleMusic = function() {
-    if (!playing) { play(); return; }
-    if (song.paused) { song.play().catch(function() {}); }
-    else { song.pause(); }
+    if (!started) { startMusic(); return; }
+    if (audio.paused) { audio.play().catch(function(){}); }
+    else { audio.pause(); }
   };
 })();
 </script>
@@ -5542,6 +5578,8 @@ function acceptEntryGate() {
     setTimeout(function() { gate.style.display = 'none'; }, 400);
   }
   document.body.style.overflow = '';
+  /* Start background music directly from this user gesture (Safari requires it) */
+  if (typeof window.startBgMusic === 'function') { window.startBgMusic(); }
 }
 // Show entry gate if not already accepted
 (function() {
