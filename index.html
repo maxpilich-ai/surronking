@@ -4141,52 +4141,32 @@ textarea:focus-visible,
 <!-- MUSIC VISUALIZER -->
 <canvas class="visualizer-canvas" id="vizCanvas"></canvas>
 <!-- Background Music — On My Own by Kyle The Hooligan -->
-<audio id="bgMusic" src="on-my-own.mp3" preload="auto" loop></audio>
 <script>
-// ISOLATED MUSIC SYSTEM — runs independently of main script
 (function() {
-  var audio = document.getElementById('bgMusic');
-  if (!audio) return;
-  var started = false;
+  var song = new Audio('on-my-own.mp3');
+  song.loop = true;
+  song.volume = 0.3;
+  song.preload = 'auto';
+  var playing = false;
 
-  // Try to start muted playback immediately
-  audio.muted = true;
-  audio.play().catch(function() {});
-
-  function startMusic() {
-    if (started) return;
-    started = true;
-    audio.currentTime = 0;
-    audio.muted = false;
-    audio.volume = 0.3;
-    audio.play().then(function() {
-      // Success — remove all listeners
-      ['click','scroll','wheel','keydown','touchstart','mousedown','pointerdown','mousemove'].forEach(function(e) {
-        document.removeEventListener(e, startMusic, true);
-        window.removeEventListener(e, startMusic, true);
-      });
-    }).catch(function() {
-      // Failed — reset and wait for next interaction
-      started = false;
-      audio.muted = true;
-      audio.play().catch(function() {});
-    });
+  function play() {
+    if (playing) return;
+    song.play().then(function() {
+      playing = true;
+      document.removeEventListener('click', play, true);
+      document.removeEventListener('touchstart', play, true);
+      document.removeEventListener('keydown', play, true);
+    }).catch(function() {});
   }
 
-  // Listen on EVERYTHING
-  ['click','scroll','wheel','keydown','touchstart','mousedown','pointerdown','mousemove'].forEach(function(e) {
-    document.addEventListener(e, startMusic, true);
-    window.addEventListener(e, startMusic, true);
-  });
+  document.addEventListener('click', play, true);
+  document.addEventListener('touchstart', play, true);
+  document.addEventListener('keydown', play, true);
 
-  // Expose toggleMusic globally for the music button
   window.toggleMusic = function() {
-    if (!started) { startMusic(); return; }
-    if (audio.paused) {
-      audio.play().catch(function() {});
-    } else {
-      audio.pause();
-    }
+    if (!playing) { play(); return; }
+    if (song.paused) { song.play().catch(function() {}); }
+    else { song.pause(); }
   };
 })();
 </script>
