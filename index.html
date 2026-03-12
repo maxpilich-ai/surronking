@@ -2425,6 +2425,29 @@ footer {
 /* ORDER MODAL — removed, Stripe handles checkout */
 
 /* BACK TO TOP */
+.music-toggle-btn {
+  position: fixed;
+  bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  right: calc(1.5rem + env(safe-area-inset-right, 0px));
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(155,48,255,0.15);
+  border: 2px solid var(--purple);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 9991;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+.music-toggle-btn:hover {
+  background: var(--purple);
+  box-shadow: 0 0 20px rgba(155,48,255,0.5);
+}
+
 .back-to-top {
   position: fixed;
   bottom: calc(10rem + env(safe-area-inset-bottom, 0px));
@@ -4135,6 +4158,7 @@ textarea:focus-visible,
 
 <!-- BACK TO TOP -->
 <button type="button" class="back-to-top" id="backToTop" onclick="backToTop()" aria-label="Back to top">↑</button>
+<button type="button" class="music-toggle-btn" id="musicToggleBtn" onclick="toggleMusic()" aria-label="Toggle music" title="Toggle music">🔊</button>
 
 <!-- Stripe handles checkout — old order form removed -->
 
@@ -4158,11 +4182,21 @@ textarea:focus-visible,
     }
   };
 
+  function updateMusicIcon() {
+    var btn = document.getElementById('musicToggleBtn');
+    if (!btn) return;
+    btn.textContent = (started && !audio.paused) ? '🔊' : '🔇';
+  }
+
   window.toggleMusic = function() {
-    if (!started) { window.startBgMusic(); return; }
+    if (!started) { window.startBgMusic(); updateMusicIcon(); return; }
     if (audio.paused) { audio.play().catch(function(){}); }
     else { audio.pause(); }
+    updateMusicIcon();
   };
+
+  audio.addEventListener('play', updateMusicIcon);
+  audio.addEventListener('pause', updateMusicIcon);
 })();
 </script>
 
