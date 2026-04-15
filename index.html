@@ -3133,7 +3133,7 @@ textarea:focus-visible,
   nav { position: relative !important; backdrop-filter: none !important; }
 </style>
 <div style="background:#9b30ff;color:#fff;text-align:center;padding:12px;font-family:sans-serif;">
-  This site works best with JavaScript enabled. For product info, email <a href="mailto:surronking@gmail.com" style="color:#fff;text-decoration:underline;">surronking@gmail.com</a>
+  This site works best with JavaScript enabled. For product info, email <a href="mailto:maxpilich88@gmail.com" style="color:#fff;text-decoration:underline;">surronking@gmail.com</a>
 </div>
 </noscript>
 
@@ -4129,7 +4129,12 @@ textarea:focus-visible,
       <h3 style="font-family:'Russo One',sans-serif;color:#fff;margin-bottom:0.75rem;font-size:1.2rem;">Before you email us...</h3>
       <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem;">Our support chatbot can answer most questions instantly — pricing, specs, shipping, order status, and more. Try it first and get an answer in seconds!</p>
       <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:0.75rem;" onclick="closeEmailIntercept();toggleChatbot();">⚡ Chat with us now</button>
-      <button type="button" style="width:100%;padding:0.75rem;background:transparent;border:1px solid var(--card-border);border-radius:8px;color:var(--text-muted);font-family:'Inter',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--card-border)'" onclick="closeEmailIntercept();document.getElementById('contact').scrollIntoView({behavior:'smooth'});">I still want to email</button>
+      <p style="color:var(--text-muted);font-size:0.75rem;margin-bottom:0.75rem;margin-top:0.5rem;">Or email us directly:</p>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        <a href="https://mail.google.com/mail/?view=cm&to=maxpilich88@gmail.com&su=Surron%20King%20Inquiry" target="_blank" rel="noopener noreferrer" style="width:100%;padding:0.75rem;background:transparent;border:1px solid var(--card-border);border-radius:8px;color:var(--text-muted);font-family:'Inter',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.3s;text-decoration:none;text-align:center;display:block;" onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--card-border)'" onclick="closeEmailIntercept();">📧 Open in Gmail</a>
+        <a href="https://outlook.live.com/mail/0/deeplink/compose?to=maxpilich88@gmail.com&subject=Surron%20King%20Inquiry" target="_blank" rel="noopener noreferrer" style="width:100%;padding:0.75rem;background:transparent;border:1px solid var(--card-border);border-radius:8px;color:var(--text-muted);font-family:'Inter',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.3s;text-decoration:none;text-align:center;display:block;" onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--card-border)'" onclick="closeEmailIntercept();">📬 Open in Outlook</a>
+        <a href="mailto:maxpilich88@gmail.com?subject=Surron%20King%20Inquiry" style="width:100%;padding:0.75rem;background:transparent;border:1px solid var(--card-border);border-radius:8px;color:var(--text-muted);font-family:'Inter',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.3s;text-decoration:none;text-align:center;display:block;" onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--card-border)'" onclick="closeEmailIntercept();">✉️ Open default email app</a>
+      </div>
     </div>
   </div>
 </div>
@@ -5596,6 +5601,7 @@ function acceptEntryGate() {
 var blockedWords = ['fuck','shit','damn','ass','bitch','bastard','crap','dick','piss','hell','cunt','wtf','stfu','bullshit','horseshit','asshole','dumbass','jackass','motherfuck','scam','scammer','fraud','fake','ripoff','rip-off','lawsuit','sue','stolen','thief','thieves','trash','garbage','worst','terrible','horrible','awful','disgusting','pathetic','useless','piece of shit','pos','suck','sucks','sucked'];
 
 function containsBadWords(text) {
+  if (!text) return false;
   var lower = text.toLowerCase();
   for (var i = 0; i < blockedWords.length; i++) {
     if (lower.indexOf(blockedWords[i]) !== -1) return true;
@@ -5654,7 +5660,7 @@ function initializeStarRating() {
   var starButtons = document.querySelectorAll('#starRating .star');
   var ratingInput = document.getElementById('rRating');
   var ratingMessage = document.getElementById('ratingMessage');
-  if (!starButtons.length) return;
+  if (!starButtons.length || !ratingInput) return;
   starButtons.forEach(function(button) {
     button.addEventListener('click', function(e) {
       e.preventDefault();
@@ -5664,7 +5670,7 @@ function initializeStarRating() {
         var btnRating = parseInt(btn.getAttribute('data-rating'));
         if (btnRating <= rating) { btn.classList.add('selected'); } else { btn.classList.remove('selected'); }
       });
-      ratingMessage.classList.remove('warning', 'success', 'show');
+      if (ratingMessage) ratingMessage.classList.remove('warning', 'success', 'show');
     });
     button.addEventListener('mouseenter', function() {
       var hoverRating = parseInt(this.getAttribute('data-rating'));
@@ -5674,19 +5680,26 @@ function initializeStarRating() {
       });
     });
   });
-  document.getElementById('starRating').addEventListener('mouseleave', function() {
+  var starContainer = document.getElementById('starRating');
+  if (starContainer) starContainer.addEventListener('mouseleave', function() {
     starButtons.forEach(function(btn) { btn.classList.remove('active'); });
   });
 }
 
 function handleReviewSubmit(event) {
   event.preventDefault();
-  var name = document.getElementById('rName').value.trim();
-  var email = document.getElementById('rEmail').value.trim();
-  var bike = document.getElementById('rBike').value.trim();
-  var rating = parseInt(document.getElementById('rRating').value);
-  var text = document.getElementById('rText').value.trim();
+  var nameEl = document.getElementById('rName');
+  var emailEl = document.getElementById('rEmail');
+  var bikeEl = document.getElementById('rBike');
+  var ratingEl = document.getElementById('rRating');
+  var textEl = document.getElementById('rText');
   var messageElement = document.getElementById('reviewMessage');
+  if (!nameEl || !emailEl || !bikeEl || !ratingEl || !textEl) return;
+  var name = nameEl.value.trim();
+  var email = emailEl.value.trim();
+  var bike = bikeEl.value.trim();
+  var rating = parseInt(ratingEl.value);
+  var text = textEl.value.trim();
   if (!name || !email || !bike || !rating || !text) {
     showReviewMessage('Please fill in all fields and select a rating.', 'error', messageElement);
     return;
