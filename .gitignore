@@ -1,0 +1,5 @@
+# Local development & verification artifacts (not part of the site)
+verify_*.py
+__pycache__/
+*.pyc
+.DS_Store
