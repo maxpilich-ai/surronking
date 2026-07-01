@@ -2900,28 +2900,6 @@ footer {
   animation: charScramble 0.5s ease-out forwards;
 }
 
-/* MEWING EASTER EGG */
-.mew-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: 10001;
-  font-family: 'Russo One', sans-serif;
-  font-size: clamp(1.5rem, 5vw, 3rem);
-  color: #39ff14;
-  text-shadow: 0 0 20px #39ff14, 0 0 40px rgba(57,255,20,0.5);
-  white-space: nowrap;
-  pointer-events: none;
-  animation: mewReveal 1.8s ease forwards;
-}
-@keyframes mewReveal {
-  0% { transform: translate(-50%, -50%) scale(0) rotate(-5deg); opacity: 0; }
-  30% { transform: translate(-50%, -50%) scale(1.3) rotate(3deg); opacity: 1; }
-  60% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
-  100% { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
-}
-
 /* RAINBOW NEON CURSOR TRAIL */
 .neon-trail {
   position: fixed;
@@ -3361,8 +3339,6 @@ textarea:focus-visible,
     <span class="marquee-item">INNOVATION</span>
     <span class="marquee-item">•</span>
     <span class="marquee-item">STYLE</span>
-    <span class="marquee-item">•</span>
-    <span class="marquee-item">SIGMA ENERGY</span>
   </div>
 </div>
 
@@ -5383,47 +5359,6 @@ document.addEventListener('keydown', function(e) {
     showToast('👑 KING MODE ACTIVATED 👑', 'success');
   }
 });
-
-// ========== MEWING EASTER EGG ==========
-let mewStreak = 0;
-let mewResetTimer = null;
-const heroTitle = document.querySelector('.hero-title');
-let mewTaps = 0;
-let mewTimer = null;
-
-function triggerMew() {
-  mewStreak++;
-  // Reset streak if no triple-click within 3 seconds
-  clearTimeout(mewResetTimer);
-  mewResetTimer = setTimeout(() => { mewStreak = 0; }, 3000);
-  const popup = document.createElement('div');
-  popup.className = 'mew-popup';
-  popup.innerHTML = mewStreak === 1 ? 'mewing streak: ' + mewStreak + ' 🗿' :
-    mewStreak < 5 ? 'mewing streak: ' + mewStreak + ' 🗿🗿' :
-    mewStreak < 10 ? 'SIGMA MEWING x' + mewStreak + ' 🗿🔥' :
-    'GIGA CHAD MEWER x' + mewStreak + ' 💀🗿🔥';
-  document.body.appendChild(popup);
-  for (let i = 0; i < 8; i++) {
-    const bolt = createBolt(window.innerWidth / 2, window.innerHeight / 2);
-    bolt.color = '#39ff14';
-    lightningBolts.push(bolt);
-  }
-  requestAnimationFrame(drawLightning);
-  setTimeout(() => popup.remove(), 2000);
-}
-
-if (heroTitle) {
-  heroTitle.style.cursor = 'pointer';
-  heroTitle.addEventListener('click', function(e) {
-    mewTaps++;
-    clearTimeout(mewTimer);
-    mewTimer = setTimeout(() => { mewTaps = 0; }, 500);
-    if (mewTaps >= 3) {
-      mewTaps = 0;
-      triggerMew();
-    }
-  });
-}
 
 // ========== RAINBOW NEON CURSOR TRAIL ==========
 let trailHue = 0;
