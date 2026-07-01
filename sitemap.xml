@@ -3,7 +3,7 @@
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://surronking.com/</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <video:video>
@@ -24,7 +24,7 @@
   </url>
   <url>
     <loc>https://surronking.com/blog.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

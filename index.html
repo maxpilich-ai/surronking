@@ -80,10 +80,6 @@
           "@type": "ShippingDeliveryTime",
           "handlingTime": { "@type": "QuantitativeValue", "minValue": "1", "maxValue": "3", "unitCode": "DAY" },
           "transitTime": { "@type": "QuantitativeValue", "minValue": "28", "maxValue": "56", "unitCode": "DAY" }
-        },
-        "shippingDestination": {
-          "@type": "DefinedRegion",
-          "addressCountry": "US"
         }
       },
       "hasMerchantReturnPolicy": {
@@ -119,10 +115,6 @@
           "@type": "ShippingDeliveryTime",
           "handlingTime": { "@type": "QuantitativeValue", "minValue": "1", "maxValue": "3", "unitCode": "DAY" },
           "transitTime": { "@type": "QuantitativeValue", "minValue": "28", "maxValue": "56", "unitCode": "DAY" }
-        },
-        "shippingDestination": {
-          "@type": "DefinedRegion",
-          "addressCountry": "US"
         }
       },
       "hasMerchantReturnPolicy": {
@@ -158,10 +150,6 @@
           "@type": "ShippingDeliveryTime",
           "handlingTime": { "@type": "QuantitativeValue", "minValue": "1", "maxValue": "3", "unitCode": "DAY" },
           "transitTime": { "@type": "QuantitativeValue", "minValue": "28", "maxValue": "56", "unitCode": "DAY" }
-        },
-        "shippingDestination": {
-          "@type": "DefinedRegion",
-          "addressCountry": "US"
         }
       },
       "hasMerchantReturnPolicy": {
@@ -193,8 +181,7 @@
           "@type": "ShippingDeliveryTime",
           "handlingTime": { "@type": "QuantitativeValue", "minValue": "1", "maxValue": "3", "unitCode": "DAY" },
           "transitTime": { "@type": "QuantitativeValue", "minValue": "28", "maxValue": "56", "unitCode": "DAY" }
-        },
-        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" }
+        }
       },
       "hasMerchantReturnPolicy": {
         "@type": "MerchantReturnPolicy",
@@ -225,8 +212,7 @@
           "@type": "ShippingDeliveryTime",
           "handlingTime": { "@type": "QuantitativeValue", "minValue": "1", "maxValue": "3", "unitCode": "DAY" },
           "transitTime": { "@type": "QuantitativeValue", "minValue": "28", "maxValue": "56", "unitCode": "DAY" }
-        },
-        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" }
+        }
       },
       "hasMerchantReturnPolicy": {
         "@type": "MerchantReturnPolicy",
@@ -257,8 +243,7 @@
           "@type": "ShippingDeliveryTime",
           "handlingTime": { "@type": "QuantitativeValue", "minValue": "1", "maxValue": "3", "unitCode": "DAY" },
           "transitTime": { "@type": "QuantitativeValue", "minValue": "28", "maxValue": "56", "unitCode": "DAY" }
-        },
-        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" }
+        }
       },
       "hasMerchantReturnPolicy": {
         "@type": "MerchantReturnPolicy",
@@ -4477,7 +4462,7 @@ textarea:focus-visible,
   <div class="chatbot-input">
     <label for="chatInput" class="sr-only">Ask a question</label>
     <input type="text" id="chatInput" placeholder="Ask a question..." aria-label="Ask a question" onkeydown="if(event.key==='Enter')sendChat()">
-    <button type="button" class="chatbot-send" onclick="sendChat()">→</button>
+    <button type="button" class="chatbot-send" onclick="sendChat()" aria-label="Send message">→</button>
   </div>
 </div>
 
