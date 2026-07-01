@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-90J4TB8V42"></script>
+<!-- Google Analytics — consent-aware: the gtag library and config load ONLY after
+     the visitor accepts cookies at the entry gate (see loadAnalytics / acceptEntryGate). -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-90J4TB8V42');
+  window.__gaId = 'G-90J4TB8V42';
+  window.loadAnalytics = function() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.__gaId;
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', window.__gaId);
+  };
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -4379,7 +4388,7 @@ textarea:focus-visible,
 <!-- MUSIC VISUALIZER -->
 <canvas class="visualizer-canvas" id="vizCanvas"></canvas>
 <!-- Background Music — LoFi by The_Mountain via Pixabay (license on file) -->
-<audio id="bgMusic" src="surronking-beat.mp3" preload="auto" loop playsinline></audio>
+<audio id="bgMusic" src="surronking-beat.mp3" preload="none" loop playsinline></audio>
 <script>
 (function() {
   var audio = document.getElementById('bgMusic');
@@ -4968,6 +4977,13 @@ function toggleCart() {
 }
 
 function addToCart(bikeName, price, btnEl) {
+  // One bike per order: Stripe Checkout handles a single bike per transaction.
+  // If the cart already has a bike, block the second add and explain why.
+  if (cart.length >= 1) {
+    showToast('One bike per order — please checkout first, then order another separately.', 'info', 3500);
+    return;
+  }
+
   // Get selected color from the card
   const card = btnEl.closest('.product-card');
   let color = 'Default';
@@ -5703,6 +5719,11 @@ function checkEntryGate() {
 function acceptEntryGate() {
   try { localStorage.setItem('surron_cookies', 'accepted'); } catch(e) {}
   try { localStorage.setItem('surron_terms', 'accepted'); } catch(e) {}
+  // Consent-aware analytics: only load GA once the visitor has accepted cookies
+  var cookiesEl = document.getElementById('entryCookies');
+  if (cookiesEl && cookiesEl.checked && typeof window.loadAnalytics === 'function') {
+    window.loadAnalytics();
+  }
   var gate = document.getElementById('entryGate');
   if (gate) {
     gate.classList.add('hiding');
